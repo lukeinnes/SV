@@ -11,7 +11,7 @@ export type Party = {
 	id: string;
 	countryId: string;
 	usualName: string;
-	englishName?: string;
+	englishName: string;
 	shortName: string;
 	codeName: string;
 	colour: string;

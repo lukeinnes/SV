@@ -78,7 +78,7 @@ function validateParties(country: Country, parties: Party[], issues: DataIssue[]
 			});
 		}
 
-		if (!party.usualName || !party.shortName || !party.codeName || !party.colour) {
+		if (!party.usualName || !party.englishName || !party.shortName || !party.codeName || !party.colour) {
 			issues.push({
 				severity: 'error',
 				countryId: country.id,
