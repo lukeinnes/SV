@@ -47,18 +47,6 @@ export type CustomElectionWebsterRound = {
 	newSeatTotal: number;
 };
 
-function calculateConsolidationIndex(totalMandate: number, A: number, k: number): number {
-	const minimumMandate = A * k;
-	const maximumMandate = 2000;
-	const denominator = maximumMandate - minimumMandate;
-
-	if (Math.abs(denominator) < 1e-12) {
-		throw new Error('Cannot calculate Consolidation Index because the denominator is too close to zero.');
-	}
-
-	return (100 * (totalMandate - minimumMandate)) / denominator;
-}
-
 export type CustomElectionCalculation = {
 	name: string;
 	totalSeats: number;
@@ -109,6 +97,18 @@ function getExclusionReason(
 	}
 
 	return undefined;
+}
+
+function calculateConsolidationIndex(totalMandate: number, A: number, k: number): number {
+	const minimumMandate = A * k;
+	const benchmarkMandate = 2000;
+	const denominator = benchmarkMandate - minimumMandate;
+
+	if (Math.abs(denominator) < 1e-12) {
+		throw new Error('Cannot calculate Consolidation Index because the denominator is too close to zero.');
+	}
+
+	return (100 * (totalMandate - minimumMandate)) / denominator;
 }
 
 function allocateSequentialWebsterByPower(
@@ -280,6 +280,8 @@ export function calculateCustomElection(
 		throw new Error('Total mandate is zero.');
 	}
 
+	const consolidationIndex = calculateConsolidationIndex(totalMandate, A, input.k);
+
 	const rowsWithPower = rowsWithMandate.map((party) => ({
 		...party,
 		fractionOfPower: party.eligible ? party.mandate / totalMandate : 0
@@ -305,23 +307,21 @@ export function calculateCustomElection(
 		};
 	});
 
-    const consolidationIndex = calculateConsolidationIndex(totalMandate, A, input.k);
-
 	return {
-        name: input.name,
-        totalSeats: input.totalSeats,
-        k: input.k,
-        A,
+		name: input.name,
+		totalSeats: input.totalSeats,
+		k: input.k,
+		A,
 
-        totalVoteShare: 100,
-        tau,
-        tauPercentage,
+		totalVoteShare: 100,
+		tau,
+		tauPercentage,
 
-        eligibleVoteShareTotal,
-        totalMandate,
-        consolidationIndex,
+		eligibleVoteShareTotal,
+		totalMandate,
+		consolidationIndex,
 
-        parties: finalRows,
-        websterRounds: websterOutput.rounds
+		parties: finalRows,
+		websterRounds: websterOutput.rounds
 	};
 }

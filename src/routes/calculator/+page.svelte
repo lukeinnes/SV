@@ -22,6 +22,29 @@
 		remainingVoteShare: number;
 	};
 
+	type SavedScenarioParty = {
+		id: string;
+		name: string;
+		abbreviation: string;
+		colour: string;
+		isOther: boolean;
+		voteShare: number | null;
+		voteShareText: string;
+	};
+
+	type SavedScenario = {
+		version: 1;
+		app: 'strengthened-voting-calculator';
+		exportedAt: string;
+		totalSeats: number | null;
+		totalSeatsText: string;
+		k: number;
+		kPreset: 'lambda' | 'custom';
+		parties: SavedScenarioParty[];
+	};
+
+	type JsonRecord = Record<string, unknown>;
+
 	const defaultColours = [
 		'#2563EB',
 		'#DC2626',
@@ -34,9 +57,12 @@
 	];
 
 	let totalSeatsText = $state('');
-	let k = $state(Number(LAMBDA.toFixed(2)));
+	let k = $state(LAMBDA);
 	let nextPartyNumber = $state(1);
 	let parties = $state<EditablePartyRow[]>([]);
+	let importFileInput = $state<HTMLInputElement | null>(null);
+	let fileMessage = $state('');
+	let fileError = $state('');
 
 	let hasOther = $derived(parties.some((party) => party.isOther));
 	let calculationState = $derived(buildCalculationState());
@@ -121,12 +147,16 @@
 	function clearParties(): void {
 		parties = [];
 		nextPartyNumber = 1;
+		fileMessage = '';
+		fileError = '';
 	}
 
 	function loadToyScenario(): void {
 		totalSeatsText = '100';
-		k = Number(LAMBDA.toFixed(2));
+		k = LAMBDA;
 		nextPartyNumber = 4;
+		fileMessage = '';
+		fileError = '';
 
 		parties = [
 			{
@@ -304,12 +334,245 @@
 		});
 	}
 
+	function isLambda(value: number): boolean {
+		return Math.abs(value - LAMBDA) < 1e-12;
+	}
+
+	function formatK(value: number): string {
+		if (isLambda(value)) {
+			return `Λ ${LAMBDA.toPrecision(7)}…`;
+		}
+
+		return value.toFixed(2);
+	}
+
 	function pctFromPercentage(value: number): string {
 		return `${fixed2(value)}%`;
 	}
 
 	function pctFromFraction(value: number): string {
 		return `${fixed2(value * 100)}%`;
+	}
+
+	function isRecord(value: unknown): value is JsonRecord {
+		return typeof value === 'object' && value !== null && !Array.isArray(value);
+	}
+
+	function readString(record: JsonRecord, key: string, fallback = ''): string {
+		const value = record[key];
+
+		if (typeof value === 'string') return value;
+
+		return fallback;
+	}
+
+	function readNumber(record: JsonRecord, key: string): number | undefined {
+		const value = record[key];
+
+		if (typeof value !== 'number') return undefined;
+		if (!Number.isFinite(value)) return undefined;
+
+		return value;
+	}
+
+	function readBoolean(record: JsonRecord, key: string, fallback = false): boolean {
+		const value = record[key];
+
+		if (typeof value === 'boolean') return value;
+
+		return fallback;
+	}
+
+	function normaliseColour(value: string, fallback: string): string {
+		if (/^#[0-9a-fA-F]{6}$/.test(value)) return value;
+
+		return fallback;
+	}
+
+	function makeUniqueId(baseId: string, seenIds: Set<string>): string {
+		const cleanBaseId = baseId.trim() || 'imported-party';
+		let candidate = cleanBaseId;
+		let suffix = 2;
+
+		while (seenIds.has(candidate)) {
+			candidate = `${cleanBaseId}-${suffix}`;
+			suffix += 1;
+		}
+
+		seenIds.add(candidate);
+
+		return candidate;
+	}
+
+	function nextPartyNumberAfterImport(rows: EditablePartyRow[]): number {
+		const customNumbers = rows
+			.map((row) => /^custom-(\d+)$/.exec(row.id)?.[1])
+			.filter((value): value is string => value !== undefined)
+			.map((value) => Number(value))
+			.filter((value) => Number.isInteger(value));
+
+		if (customNumbers.length === 0) {
+			return rows.length + 1;
+		}
+
+		return Math.max(...customNumbers) + 1;
+	}
+
+	function buildSavedScenario(): SavedScenario {
+		const parsedSeats = parsePositiveIntegerText(totalSeatsText);
+
+		return {
+			version: 1,
+			app: 'strengthened-voting-calculator',
+			exportedAt: new Date().toISOString(),
+			totalSeats: parsedSeats ?? null,
+			totalSeatsText,
+			k,
+			kPreset: isLambda(k) ? 'lambda' : 'custom',
+			parties: parties.map((party) => ({
+				id: party.id,
+				name: party.name,
+				abbreviation: party.abbreviation,
+				colour: party.colour,
+				isOther: party.isOther,
+				voteShare: parseNumberText(party.voteShareText) ?? null,
+				voteShareText: party.voteShareText
+			}))
+		};
+	}
+
+	function exportScenario(): void {
+		fileMessage = '';
+		fileError = '';
+
+		try {
+			const scenario = buildSavedScenario();
+			const json = JSON.stringify(scenario, null, 2);
+			const blob = new Blob([json], { type: 'application/json' });
+			const url = URL.createObjectURL(blob);
+			const link = document.createElement('a');
+			const datePart = new Date().toISOString().slice(0, 10);
+
+			link.href = url;
+			link.download = `sv-calculator-${datePart}.json`;
+
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+
+			URL.revokeObjectURL(url);
+
+			fileMessage = 'Scenario exported as JSON.';
+		} catch (error) {
+			fileError = error instanceof Error ? error.message : 'Could not export scenario.';
+		}
+	}
+
+	function openImportPicker(): void {
+		fileMessage = '';
+		fileError = '';
+		importFileInput?.click();
+	}
+
+	function loadSavedScenario(value: unknown): void {
+		if (!isRecord(value)) {
+			throw new Error('This file is not a valid SV calculator scenario.');
+		}
+
+		const version = readNumber(value, 'version');
+		const app = readString(value, 'app');
+
+		if (version !== 1 || app !== 'strengthened-voting-calculator') {
+			throw new Error('This JSON file is not a recognised SV calculator scenario.');
+		}
+
+		const importedK = readNumber(value, 'k');
+
+		if (importedK === undefined || importedK <= 0) {
+			throw new Error('The scenario file does not contain a valid k value.');
+		}
+
+		const kPreset = readString(value, 'kPreset');
+		const rawParties = value.parties;
+
+		if (!Array.isArray(rawParties)) {
+			throw new Error('The scenario file does not contain a valid party list.');
+		}
+
+		const importedRows: EditablePartyRow[] = [];
+		const seenIds = new Set<string>();
+		let otherCount = 0;
+
+		for (const [index, rawParty] of rawParties.entries()) {
+			if (!isRecord(rawParty)) {
+				throw new Error(`Party row ${index + 1} is not valid.`);
+			}
+
+			const isOther = readBoolean(rawParty, 'isOther', false);
+
+			if (isOther) {
+				otherCount += 1;
+
+				if (otherCount > 1) {
+					throw new Error('The scenario file contains more than one Other row.');
+				}
+			}
+
+			const fallbackColour = defaultColours[index % defaultColours.length];
+			const savedVoteShare = readNumber(rawParty, 'voteShare');
+			const savedVoteShareText = readString(rawParty, 'voteShareText');
+			const voteShareText =
+				savedVoteShareText.trim().length > 0
+					? savedVoteShareText
+					: savedVoteShare !== undefined
+						? formatVoteInput(savedVoteShare)
+						: '';
+
+			importedRows.push({
+				id: makeUniqueId(readString(rawParty, 'id', `imported-${index + 1}`), seenIds),
+				name: readString(rawParty, 'name', isOther ? 'Other' : `Party ${index + 1}`),
+				abbreviation: readString(rawParty, 'abbreviation', isOther ? 'OTH' : `P${index + 1}`),
+				colour: normaliseColour(readString(rawParty, 'colour'), fallbackColour),
+				isOther,
+				voteShareText
+			});
+		}
+
+		const savedTotalSeats = readNumber(value, 'totalSeats');
+		const savedTotalSeatsText = readString(value, 'totalSeatsText');
+
+		totalSeatsText =
+			savedTotalSeats !== undefined && Number.isInteger(savedTotalSeats) && savedTotalSeats > 0
+				? String(savedTotalSeats)
+				: savedTotalSeatsText;
+
+		k = kPreset === 'lambda' || isLambda(importedK) ? LAMBDA : importedK;
+		nextPartyNumber = nextPartyNumberAfterImport(importedRows);
+
+		setPartiesWithOtherLast(importedRows);
+	}
+
+	async function importScenarioFromFile(event: Event): Promise<void> {
+		const input = event.currentTarget as HTMLInputElement;
+		const file = input.files?.[0];
+
+		fileMessage = '';
+		fileError = '';
+
+		if (!file) return;
+
+		try {
+			const text = await file.text();
+			const parsed = JSON.parse(text);
+
+			loadSavedScenario(parsed);
+
+			fileMessage = `Imported ${file.name}.`;
+		} catch (error) {
+			fileError = error instanceof Error ? error.message : 'Could not import scenario.';
+		} finally {
+			input.value = '';
+		}
 	}
 </script>
 
@@ -354,10 +617,10 @@
 		<div class="slider-header">
 			<label for="k-slider">
 				<span>Mandate parameter k</span>
-				<strong>{Number(k).toFixed(2)}</strong>
+				<strong>{formatK(k)}</strong>
 			</label>
 
-			<button type="button" onclick={() => (k = Number(LAMBDA.toFixed(2)))}>
+			<button type="button" onclick={() => (k = LAMBDA)}>
 				Reset to Λ
 			</button>
 		</div>
@@ -380,9 +643,25 @@
 				<button type="button" onclick={addOther} disabled={hasOther}>Add Other</button>
 				<button type="button" onclick={scaleVoteShares}>Scale to 100%</button>
 				<button type="button" onclick={loadToyScenario}>Load toy scenario</button>
+				<button type="button" onclick={exportScenario}>Export JSON</button>
+				<button type="button" onclick={openImportPicker}>Import JSON</button>
 				<button type="button" onclick={clearParties}>Clear</button>
+
+				<input
+					class="hidden-file-input"
+					type="file"
+					accept="application/json,.json"
+					bind:this={importFileInput}
+					onchange={importScenarioFromFile}
+				/>
 			</div>
 		</div>
+
+		{#if fileError}
+			<div class="file-message file-message-error">{fileError}</div>
+		{:else if fileMessage}
+			<div class="file-message">{fileMessage}</div>
+		{/if}
 
 		<div class="vote-total" class:complete={Math.abs(calculationState.remainingVoteShare) <= 0.000001}>
 			<span>Current vote total</span>
@@ -459,7 +738,7 @@
 
 								<td>
 									<button type="button" class="danger" onclick={() => removeParty(party.id)}>
-											Remove
+										Remove
 									</button>
 								</td>
 							</tr>
@@ -512,11 +791,11 @@
 					<span>Total mandate</span>
 					<strong>{integer(calculationState.calculation.totalMandate)}</strong>
 				</div>
-                
-                <div>
-                	<span>Consolidation Index</span>
-                	<strong>{fixed2(calculationState.calculation.consolidationIndex)}</strong>
-                </div>
+
+				<div>
+					<span>Consolidation Index</span>
+					<strong>{fixed2(calculationState.calculation.consolidationIndex)}</strong>
+				</div>
 			</div>
 
 			<div class="table-wrap">
@@ -649,6 +928,10 @@
 		padding: 3px;
 	}
 
+	.hidden-file-input {
+		display: none;
+	}
+
 	.tau-preview {
 		border: 1px solid #e2e8f0;
 		border-radius: 16px;
@@ -750,6 +1033,22 @@
 		justify-content: flex-end;
 	}
 
+	.file-message {
+		border: 1px solid #bbf7d0;
+		border-radius: 14px;
+		background: #f0fdf4;
+		color: #166534;
+		font-weight: 700;
+		margin-bottom: 16px;
+		padding: 11px 13px;
+	}
+
+	.file-message-error {
+		border-color: #fecaca;
+		background: #fef2f2;
+		color: #991b1b;
+	}
+
 	.vote-total {
 		display: flex;
 		flex-wrap: wrap;
@@ -800,7 +1099,7 @@
 
 	.stats {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-template-columns: repeat(5, minmax(0, 1fr));
 		gap: 12px;
 		margin-bottom: 18px;
 	}
@@ -918,6 +1217,12 @@
 		color: #64748b;
 		font-size: 0.84rem;
 		white-space: normal;
+	}
+
+	@media (max-width: 1100px) {
+		.stats {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
 
 	@media (max-width: 900px) {
