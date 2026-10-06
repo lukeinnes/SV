@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { countryDatasets } from '$lib/data/registry';
 	import { LAMBDA } from '$lib/sv/constants';
 	import {
 		calculateCustomElection,
@@ -8,6 +9,7 @@
 
 	type EditablePartyRow = {
 		id: string;
+		sourcePartyId?: string;
 		name: string;
 		abbreviation: string;
 		colour: string;
@@ -24,6 +26,7 @@
 
 	type SavedScenarioParty = {
 		id: string;
+		sourcePartyId?: string;
 		name: string;
 		abbreviation: string;
 		colour: string;
@@ -36,6 +39,7 @@
 		version: 1;
 		app: 'strengthened-voting-calculator';
 		exportedAt: string;
+		countryId: string | null;
 		totalSeats: number | null;
 		totalSeatsText: string;
 		k: number;
@@ -44,6 +48,55 @@
 	};
 
 	type JsonRecord = Record<string, unknown>;
+
+	type CalculatorCountry = {
+		id: string;
+		name: string;
+		usualName?: string;
+	};
+
+	type CalculatorParty = {
+		id: string;
+		countryId: string;
+		usualName: string;
+		englishName?: string;
+		shortName: string;
+		codeName: string;
+		colour: string;
+		kind: 'party' | 'other' | 'independent' | 'special';
+	};
+
+	type CalculatorElectionResult = {
+		partyId: string;
+		votes: number;
+		seatsWon?: number;
+	};
+
+	type CalculatorElection = {
+		id: string;
+		name?: string;
+		year?: number | string;
+		date?: string;
+		totalVotes?: number;
+		totalSeats: number;
+		results: CalculatorElectionResult[];
+	};
+
+	type CalculatorCountryDataset = {
+		country?: CalculatorCountry;
+		countryId?: string;
+		parties: CalculatorParty[];
+		elections: CalculatorElection[];
+	};
+
+	type PartyPickerOption = {
+		party: CalculatorParty;
+		recentVotes: number;
+		recentVoteShare: number;
+		alreadySelected: boolean;
+	};
+
+	const calculatorDatasets = countryDatasets as unknown as CalculatorCountryDataset[];
 
 	const defaultColours = [
 		'#2563EB',
@@ -56,6 +109,11 @@
 		'#475569'
 	];
 
+	let selectedCountryId = $state('');
+	let partyPickerOpen = $state(false);
+	let partyPickerExpanded = $state(false);
+	let partySearch = $state('');
+
 	let totalSeatsText = $state('');
 	let k = $state(LAMBDA);
 	let nextPartyNumber = $state(1);
@@ -64,8 +122,300 @@
 	let fileMessage = $state('');
 	let fileError = $state('');
 
-	let hasOther = $derived(parties.some((party) => party.isOther));
+	let selectedCountry = $derived(
+		calculatorDatasets.find((dataset) => datasetCountryId(dataset) === selectedCountryId)
+	);
+	let canImportCountryElection = $derived(
+		Boolean(selectedCountry && findMostRecentElection(selectedCountry.elections))
+	);
+    let currentTotalVoteShare = $derived(
+        parties.reduce((total, party) => total + parsedVoteShare(party), 0)
+    );
+    let nonOtherVoteShare = $derived(
+        parties
+            .filter((party) => !party.isOther)
+            .reduce((total, party) => total + parsedVoteShare(party), 0)
+    );
+    let remainderToOther = $derived(Number((100 - nonOtherVoteShare).toFixed(2)));
+    let canFillRemainderToOther = $derived(
+        currentTotalVoteShare < 99.999999 && remainderToOther > 0
+    );
+	let visibleCountryPartyOptions = $derived(buildVisibleCountryPartyOptions());
 	let calculationState = $derived(buildCalculationState());
+
+	function datasetCountryId(dataset: CalculatorCountryDataset): string {
+		return dataset.country?.id ?? dataset.countryId ?? dataset.parties[0]?.countryId ?? '';
+	}
+
+	function datasetCountryName(dataset: CalculatorCountryDataset): string {
+		return (
+			dataset.country?.name ??
+			dataset.country?.usualName ??
+			datasetCountryId(dataset).toUpperCase()
+		);
+	}
+
+	function electionSortValue(election: CalculatorElection): number {
+		const possibleValues = [election.year, election.date, election.id, election.name];
+
+		for (const value of possibleValues) {
+			if (value === undefined || value === null) continue;
+
+			const match = String(value).match(/\d{4}/);
+
+			if (match) return Number(match[0]);
+		}
+
+		return 0;
+	}
+
+	function findMostRecentElection(elections: CalculatorElection[]): CalculatorElection | undefined {
+		if (elections.length === 0) return undefined;
+
+		return [...elections].sort((a, b) => electionSortValue(b) - electionSortValue(a))[0];
+	}
+
+	function countryPartyName(party: CalculatorParty): string {
+		return party.englishName?.trim() || party.usualName || party.shortName || party.id;
+	}
+
+	function countryPartyAbbreviation(party: CalculatorParty): string {
+		return party.shortName?.trim() || party.codeName?.trim() || party.id;
+	}
+
+	function countryPartyOptions(dataset: CalculatorCountryDataset): PartyPickerOption[] {
+		const election = findMostRecentElection(dataset.elections);
+		const electionResults = election?.results ?? [];
+		const recentTotalVotes =
+			election?.totalVotes ??
+			electionResults.reduce((total, result) => total + result.votes, 0);
+
+		const votesByPartyId: Record<string, number> = {};
+
+		for (const result of electionResults) {
+			votesByPartyId[result.partyId] = (votesByPartyId[result.partyId] ?? 0) + result.votes;
+		}
+
+		return dataset.parties
+			.filter((party) => party.kind === 'party')
+			.map((party) => {
+				const recentVotes = votesByPartyId[party.id] ?? 0;
+
+				return {
+					party,
+					recentVotes,
+					recentVoteShare: recentTotalVotes > 0 ? (recentVotes / recentTotalVotes) * 100 : 0,
+					alreadySelected: parties.some((row) => row.sourcePartyId === party.id)
+				};
+			})
+			.sort((a, b) => {
+				if (b.recentVotes !== a.recentVotes) return b.recentVotes - a.recentVotes;
+
+				return countryPartyName(a.party).localeCompare(countryPartyName(b.party));
+			});
+	}
+
+	function buildVisibleCountryPartyOptions(): PartyPickerOption[] {
+		if (!selectedCountry) return [];
+
+		const search = partySearch.trim().toLowerCase();
+
+		const options = countryPartyOptions(selectedCountry).filter((option) => {
+			if (!search) return true;
+
+			const name = countryPartyName(option.party).toLowerCase();
+			const abbreviation = countryPartyAbbreviation(option.party).toLowerCase();
+			const codeName = option.party.codeName?.toLowerCase() ?? '';
+
+			return name.includes(search) || abbreviation.includes(search) || codeName.includes(search);
+		});
+
+		if (!partyPickerExpanded) {
+			return options.slice(0, 8);
+		}
+
+		return options;
+	}
+
+	function handleCountrySelect(event: Event): void {
+		const nextCountryId = (event.currentTarget as HTMLSelectElement).value;
+		selectedCountryId = nextCountryId;
+		partyPickerOpen = false;
+		partyPickerExpanded = false;
+		partySearch = '';
+		fileMessage = '';
+		fileError = '';
+
+		const dataset = calculatorDatasets.find((item) => datasetCountryId(item) === nextCountryId);
+
+		if (!dataset) return;
+
+		const election = findMostRecentElection(dataset.elections);
+
+		if (election && Number.isInteger(election.totalSeats) && election.totalSeats > 0) {
+			totalSeatsText = String(election.totalSeats);
+		}
+	}
+
+	function openCountryPartyPicker(): void {
+		if (!selectedCountry) return;
+
+		partyPickerOpen = !partyPickerOpen;
+		partyPickerExpanded = false;
+		partySearch = '';
+	}
+
+	function createCustomPartyFromPicker(): void {
+		addParty();
+		partyPickerOpen = false;
+		partyPickerExpanded = false;
+		partySearch = '';
+	}
+
+	function addCountryParty(party: CalculatorParty): void {
+		if (parties.some((row) => row.sourcePartyId === party.id)) return;
+
+		const currentIds = new Set(parties.map((row) => row.id));
+
+		const newParty: EditablePartyRow = {
+			id: makeUniqueId(`known-${party.id}`, currentIds),
+			sourcePartyId: party.id,
+			name: countryPartyName(party),
+			abbreviation: countryPartyAbbreviation(party),
+			colour: normaliseColour(party.colour, defaultColours[parties.length % defaultColours.length]),
+			isOther: false,
+			voteShareText: ''
+		};
+
+		setPartiesWithOtherLast([...parties, newParty]);
+	}
+
+	function importLatestCountryElection(): void {
+		fileMessage = '';
+		fileError = '';
+
+		if (!selectedCountry) {
+			fileError = 'Select a country before importing an election.';
+			return;
+		}
+
+		const election = findMostRecentElection(selectedCountry.elections);
+
+		if (!election) {
+			fileError = 'No election was found for the selected country.';
+			return;
+		}
+
+		if (!Number.isInteger(election.totalSeats) || election.totalSeats <= 0) {
+			fileError = 'The selected country election has an invalid seat count.';
+			return;
+		}
+
+		const totalVotes =
+			election.totalVotes ?? election.results.reduce((total, result) => total + result.votes, 0);
+
+		if (!Number.isFinite(totalVotes) || totalVotes <= 0) {
+			fileError = 'The selected country election has an invalid vote total.';
+			return;
+		}
+
+		const partiesById: Record<string, CalculatorParty> = {};
+
+		for (const party of selectedCountry.parties) {
+			partiesById[party.id] = party;
+		}
+
+		const tauVotes = totalVotes / election.totalSeats;
+		const currentIds = new Set<string>();
+		const importedRows: EditablePartyRow[] = [];
+		let includedVoteTotal = 0;
+
+		const sortedResults = [...election.results].sort((a, b) => b.votes - a.votes);
+
+		for (const result of sortedResults) {
+			const party = partiesById[result.partyId];
+
+			if (!party) continue;
+
+			const seatsWon = result.seatsWon ?? 0;
+			const shouldImportSeparately = party.kind === 'party' && (result.votes > tauVotes || seatsWon > 0);
+
+			if (!shouldImportSeparately) continue;
+
+			includedVoteTotal += result.votes;
+
+			importedRows.push({
+				id: makeUniqueId(`known-${party.id}`, currentIds),
+				sourcePartyId: party.id,
+				name: countryPartyName(party),
+				abbreviation: countryPartyAbbreviation(party),
+				colour: normaliseColour(party.colour, defaultColours[importedRows.length % defaultColours.length]),
+				isOther: false,
+				voteShareText: formatVoteInput((result.votes / totalVotes) * 100)
+			});
+		}
+
+		const otherVotes = Math.max(0, totalVotes - includedVoteTotal);
+		const otherVoteShare = (otherVotes / totalVotes) * 100;
+
+		if (otherVoteShare >= 0.005) {
+			importedRows.push({
+				id: makeUniqueId('custom-other', currentIds),
+				name: 'Other',
+				abbreviation: 'OTH',
+				colour: '#CBD5E1',
+				isOther: true,
+				voteShareText: formatVoteInput(otherVoteShare)
+			});
+		}
+
+		const balancedRows = balanceRowsToOneHundred(importedRows);
+
+		totalSeatsText = String(election.totalSeats);
+		nextPartyNumber = nextPartyNumberAfterImport(balancedRows);
+		partyPickerOpen = false;
+		partyPickerExpanded = false;
+		partySearch = '';
+
+		setPartiesWithOtherLast(balancedRows);
+
+		fileMessage = 'Imported latest election for selected country.';
+	}
+
+	function balanceRowsToOneHundred(rows: EditablePartyRow[]): EditablePartyRow[] {
+		if (rows.length === 0) return rows;
+
+		const currentTotal = rows.reduce(
+			(total, row) => total + (parseNumberText(row.voteShareText) ?? 0),
+			0
+		);
+		const remainder = Number((100 - currentTotal).toFixed(2));
+
+		if (Math.abs(remainder) < 0.01) return rows;
+
+		const otherIndex = rows.findIndex((row) => row.isOther);
+		const targetIndex =
+			otherIndex >= 0
+				? otherIndex
+				: rows.reduce((bestIndex, row, index, allRows) => {
+						const rowVote = parseNumberText(row.voteShareText) ?? 0;
+						const bestVote = parseNumberText(allRows[bestIndex].voteShareText) ?? 0;
+
+						return rowVote > bestVote ? index : bestIndex;
+					}, 0);
+
+		const target = rows[targetIndex];
+		const targetVote = parseNumberText(target.voteShareText) ?? 0;
+
+		return rows.map((row, index) => {
+			if (index !== targetIndex) return row;
+
+			return {
+				...row,
+				voteShareText: formatVoteInput(Math.max(0, targetVote + remainder))
+			};
+		});
+	}
 
 	function parseNumberText(value: string): number | undefined {
 		const cleaned = value.replaceAll(',', '').trim();
@@ -97,10 +447,6 @@
 		return parseNumberText(party.voteShareText) ?? 0;
 	}
 
-	function normalParties(): EditablePartyRow[] {
-		return parties.filter((party) => !party.isOther);
-	}
-
 	function setPartiesWithOtherLast(rows: EditablePartyRow[]): void {
 		const other = rows.find((party) => party.isOther);
 		const regular = rows.filter((party) => !party.isOther);
@@ -124,20 +470,40 @@
 		setPartiesWithOtherLast([...parties, newParty]);
 	}
 
-	function addOther(): void {
-		if (hasOther) return;
+	function fillRemainderToOther(): void {
+		const remainder = Number((100 - nonOtherVoteShare).toFixed(2));
 
-		parties = [
-			...normalParties(),
+		if (remainder <= 0) return;
+
+		const existingOther = parties.find((party) => party.isOther);
+
+		if (existingOther) {
+			const updatedRows = parties.map((party) => {
+				if (!party.isOther) return party;
+
+				return {
+					...party,
+					voteShareText: formatVoteInput(remainder)
+				};
+			});
+
+			setPartiesWithOtherLast(updatedRows);
+			return;
+		}
+
+		const currentIds = new Set(parties.map((party) => party.id));
+
+		setPartiesWithOtherLast([
+			...parties,
 			{
-				id: 'custom-other',
+				id: makeUniqueId('custom-other', currentIds),
 				name: 'Other',
 				abbreviation: 'OTH',
 				colour: '#CBD5E1',
 				isOther: true,
-				voteShareText: ''
+				voteShareText: formatVoteInput(remainder)
 			}
-		];
+		]);
 	}
 
 	function removeParty(id: string): void {
@@ -147,51 +513,11 @@
 	function clearParties(): void {
 		parties = [];
 		nextPartyNumber = 1;
+		partyPickerOpen = false;
+		partyPickerExpanded = false;
+		partySearch = '';
 		fileMessage = '';
 		fileError = '';
-	}
-
-	function loadToyScenario(): void {
-		totalSeatsText = '100';
-		k = LAMBDA;
-		nextPartyNumber = 4;
-		fileMessage = '';
-		fileError = '';
-
-		parties = [
-			{
-				id: 'toy-a',
-				name: 'Party A',
-				abbreviation: 'A',
-				colour: '#2563EB',
-				isOther: false,
-				voteShareText: '42.00'
-			},
-			{
-				id: 'toy-b',
-				name: 'Party B',
-				abbreviation: 'B',
-				colour: '#DC2626',
-				isOther: false,
-				voteShareText: '33.00'
-			},
-			{
-				id: 'toy-c',
-				name: 'Party C',
-				abbreviation: 'C',
-				colour: '#16A34A',
-				isOther: false,
-				voteShareText: '15.00'
-			},
-			{
-				id: 'toy-other',
-				name: 'Other',
-				abbreviation: 'OTH',
-				colour: '#CBD5E1',
-				isOther: true,
-				voteShareText: '10.00'
-			}
-		];
 	}
 
 	function adjustVoteShare(id: string, delta: number): void {
@@ -425,12 +751,14 @@
 			version: 1,
 			app: 'strengthened-voting-calculator',
 			exportedAt: new Date().toISOString(),
+			countryId: selectedCountryId || null,
 			totalSeats: parsedSeats ?? null,
 			totalSeatsText,
 			k,
 			kPreset: isLambda(k) ? 'lambda' : 'custom',
 			parties: parties.map((party) => ({
 				id: party.id,
+				sourcePartyId: party.sourcePartyId,
 				name: party.name,
 				abbreviation: party.abbreviation,
 				colour: party.colour,
@@ -530,6 +858,7 @@
 
 			importedRows.push({
 				id: makeUniqueId(readString(rawParty, 'id', `imported-${index + 1}`), seenIds),
+				sourcePartyId: readString(rawParty, 'sourcePartyId') || undefined,
 				name: readString(rawParty, 'name', isOther ? 'Other' : `Party ${index + 1}`),
 				abbreviation: readString(rawParty, 'abbreviation', isOther ? 'OTH' : `P${index + 1}`),
 				colour: normaliseColour(readString(rawParty, 'colour'), fallbackColour),
@@ -537,6 +866,16 @@
 				voteShareText
 			});
 		}
+
+		const savedCountryId = readString(value, 'countryId');
+		const countryExists = calculatorDatasets.some(
+			(dataset) => datasetCountryId(dataset) === savedCountryId
+		);
+
+		selectedCountryId = countryExists ? savedCountryId : '';
+		partyPickerOpen = false;
+		partyPickerExpanded = false;
+		partySearch = '';
 
 		const savedTotalSeats = readNumber(value, 'totalSeats');
 		const savedTotalSeatsText = readString(value, 'totalSeatsText');
@@ -585,13 +924,23 @@
 		<p class="eyebrow">Strengthened Voting calculator</p>
 		<h1>Custom election calculator</h1>
 		<p class="lede">
-			Build a hypothetical election from scratch. Enter the number of seats, add parties, set vote
-			shares, and see the SV result update live.
+			Build a hypothetical election from scratch. Choose a country to speed up party entry, or
+			leave the country blank and create every party manually.
 		</p>
 	</header>
 
 	<section class="panel">
 		<div class="top-grid">
+			<label>
+				<span>Country assistance</span>
+				<select bind:value={selectedCountryId} onchange={handleCountrySelect}>
+					<option value="">None</option>
+					{#each calculatorDatasets as dataset (datasetCountryId(dataset))}
+						<option value={datasetCountryId(dataset)}>{datasetCountryName(dataset)}</option>
+					{/each}
+				</select>
+			</label>
+
 			<label>
 				<span>Total seats</span>
 				<input
@@ -639,10 +988,25 @@
 			</div>
 
 			<div class="actions">
-				<button type="button" onclick={addParty}>Add party</button>
-				<button type="button" onclick={addOther} disabled={hasOther}>Add Other</button>
+				<button type="button" onclick={addParty}>Create custom party</button>
+				<button type="button" onclick={openCountryPartyPicker} disabled={!selectedCountry}>
+					Add country party
+				</button>
+				<button
+					type="button"
+					onclick={importLatestCountryElection}
+					disabled={!canImportCountryElection}
+				>
+					Import latest country election
+				</button>
+				<button
+					type="button"
+					onclick={fillRemainderToOther}
+					disabled={!canFillRemainderToOther}
+				>
+					Fill remainder to Other ({pctFromPercentage(Math.max(0, remainderToOther))})
+				</button>
 				<button type="button" onclick={scaleVoteShares}>Scale to 100%</button>
-				<button type="button" onclick={loadToyScenario}>Load toy scenario</button>
 				<button type="button" onclick={exportScenario}>Export JSON</button>
 				<button type="button" onclick={openImportPicker}>Import JSON</button>
 				<button type="button" onclick={clearParties}>Clear</button>
@@ -656,6 +1020,81 @@
 				/>
 			</div>
 		</div>
+
+		{#if partyPickerOpen && selectedCountry}
+			<div class="party-picker">
+				<div class="party-picker-header">
+					<div>
+						<h3>Add party from {datasetCountryName(selectedCountry)}</h3>
+						<p>
+							The first suggestions are ordered by vote count in the latest election. Selecting
+							a party fills its name, abbreviation and colour. You still enter the vote share.
+						</p>
+					</div>
+
+					<div class="actions">
+						<button type="button" onclick={createCustomPartyFromPicker}>Create custom party</button>
+
+						{#if partyPickerExpanded}
+							<button
+								type="button"
+								onclick={() => {
+									partyPickerExpanded = false;
+									partySearch = '';
+								}}
+							>
+								Collapse
+							</button>
+						{:else}
+							<button type="button" onclick={() => (partyPickerExpanded = true)}>
+								Expand
+							</button>
+						{/if}
+					</div>
+				</div>
+
+				{#if partyPickerExpanded}
+					<label class="party-picker-search">
+						<span>Search parties</span>
+						<input
+							type="text"
+							placeholder="Search by name or abbreviation"
+							bind:value={partySearch}
+						/>
+					</label>
+				{/if}
+
+				<div class="party-option-grid">
+					{#each visibleCountryPartyOptions as option (option.party.id)}
+						<button
+							type="button"
+							class="party-option"
+							disabled={option.alreadySelected}
+							onclick={() => addCountryParty(option.party)}
+						>
+							<span
+								class="swatch"
+								style={`background: ${option.party.colour}`}
+								aria-label={`${countryPartyName(option.party)} colour`}
+							></span>
+
+							<span>
+								<strong>{countryPartyName(option.party)}</strong>
+								<small>
+									{countryPartyAbbreviation(option.party)}
+									{#if option.recentVotes > 0}
+										· latest vote share {pctFromPercentage(option.recentVoteShare)}
+									{/if}
+									{#if option.alreadySelected}
+										· already added
+									{/if}
+								</small>
+							</span>
+						</button>
+					{/each}
+				</div>
+			</div>
+		{/if}
 
 		{#if fileError}
 			<div class="file-message file-message-error">{fileError}</div>
@@ -672,7 +1111,19 @@
 		{#if parties.length === 0}
 			<div class="empty-state">
 				<p>No parties have been added yet.</p>
-				<button type="button" onclick={addParty}>Add first party</button>
+				<div class="actions empty-actions">
+					<button type="button" onclick={addParty}>Create custom party</button>
+					<button type="button" onclick={openCountryPartyPicker} disabled={!selectedCountry}>
+						Add country party
+					</button>
+					<button
+						type="button"
+						onclick={importLatestCountryElection}
+						disabled={!canImportCountryElection}
+					>
+						Import latest country election
+					</button>
+				</div>
 			</div>
 		{:else}
 			<div class="table-wrap">
@@ -893,7 +1344,7 @@
 
 	.top-grid {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: 1fr 1fr 1fr;
 		gap: 16px;
 		margin-bottom: 20px;
 	}
@@ -1031,6 +1482,64 @@
 		gap: 8px;
 		align-items: flex-start;
 		justify-content: flex-end;
+	}
+
+	.empty-actions {
+		justify-content: flex-start;
+	}
+
+	.party-picker {
+		border: 1px solid #dbeafe;
+		border-radius: 18px;
+		background: #eff6ff;
+		margin-bottom: 16px;
+		padding: 16px;
+	}
+
+	.party-picker-header {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 14px;
+	}
+
+	.party-picker-header p {
+		margin: 6px 0 0;
+		color: #475569;
+		line-height: 1.45;
+	}
+
+	.party-picker-search {
+		margin-bottom: 14px;
+	}
+
+	.party-option-grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 10px;
+	}
+
+	.party-option {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		border-radius: 16px;
+		background: white;
+		padding: 11px;
+		text-align: left;
+		white-space: normal;
+	}
+
+	.party-option strong,
+	.party-option small {
+		display: block;
+	}
+
+	.party-option small {
+		color: #64748b;
+		font-size: 0.78rem;
+		font-weight: 600;
+		line-height: 1.35;
 	}
 
 	.file-message {
@@ -1200,6 +1709,7 @@
 
 	.swatch {
 		display: inline-block;
+		flex: 0 0 auto;
 		width: 22px;
 		height: 22px;
 		border: 1px solid #94a3b8;
@@ -1219,6 +1729,12 @@
 		white-space: normal;
 	}
 
+	@media (max-width: 1200px) {
+		.party-option-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
 	@media (max-width: 1100px) {
 		.stats {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1227,12 +1743,14 @@
 
 	@media (max-width: 900px) {
 		.top-grid,
-		.stats {
+		.stats,
+		.party-option-grid {
 			grid-template-columns: 1fr;
 		}
 
 		.slider-header,
-		.section-heading {
+		.section-heading,
+		.party-picker-header {
 			align-items: stretch;
 			flex-direction: column;
 		}
