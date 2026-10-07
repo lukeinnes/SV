@@ -2,16 +2,6 @@ import type { Party } from '../types';
 
 export const gbParties: Party[] = [
 	{
-		id: 'gb-conservative',
-		countryId: 'gb',
-		usualName: 'Conservative Party',
-		englishName: 'Conservative Party',
-		shortName: 'Conservative',
-		codeName: 'CON',
-		colour: '#0087DC',
-		kind: 'party'
-	},
-	{
 		id: 'gb-labour',
 		countryId: 'gb',
 		usualName: 'Labour Party',
@@ -19,6 +9,16 @@ export const gbParties: Party[] = [
 		shortName: 'Labour',
 		codeName: 'LAB',
 		colour: '#DC241F',
+		kind: 'party'
+	},
+	{
+		id: 'gb-conservative',
+		countryId: 'gb',
+		usualName: 'Conservative Party',
+		englishName: 'Conservative Party',
+		shortName: 'Conservative',
+		codeName: 'CON',
+		colour: '#0087DC',
 		kind: 'party'
 	},
 	{
@@ -39,26 +39,6 @@ export const gbParties: Party[] = [
 		shortName: 'Reform',
 		codeName: 'REF',
 		colour: '#12B6CF',
-		kind: 'party'
-	},
-	{
-		id: 'gb-brexit',
-		countryId: 'gb',
-		usualName: 'Brexit Party',
-		englishName: 'Brexit Party',
-		shortName: 'Brexit',
-		codeName: 'BXP',
-		colour: '#12B6CF',
-		kind: 'party'
-	},
-	{
-		id: 'gb-ukip',
-		countryId: 'gb',
-		usualName: 'UK Independence Party',
-		englishName: 'UK Independence Party',
-		shortName: 'UKIP',
-		codeName: 'UKIP',
-		colour: '#70147A',
 		kind: 'party'
 	},
 	{
@@ -92,6 +72,16 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
+		id: 'gb-restore',
+		countryId: 'gb',
+		usualName: 'Restore Britain',
+		englishName: 'Restore Britain',
+		shortName: 'Restore',
+		codeName: 'RES',
+		colour: '#051D3F',
+		kind: 'party'
+	},
+	{
 		id: 'gb-dup',
 		countryId: 'gb',
 		usualName: 'Democratic Unionist Party',
@@ -112,16 +102,6 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'gb-uuup',
-		countryId: 'gb',
-		usualName: 'United Ulster Unionist Party',
-		englishName: 'United Ulster Unionist Party',
-		shortName: 'UUUP',
-		codeName: 'UUUP',
-		colour: '#FF8C00',
-		kind: 'party'
-	},
-	{
 		id: 'gb-sdlp',
 		countryId: 'gb',
 		usualName: 'Social Democratic & Labour Party',
@@ -129,26 +109,6 @@ export const gbParties: Party[] = [
 		shortName: 'SDLP',
 		codeName: 'SDLP',
 		colour: '#008753',
-		kind: 'party'
-	},
-	{
-		id: 'gb-vupp',
-		countryId: 'gb',
-		usualName: 'Vanguard Unionist Progressive Party',
-		englishName: 'Vanguard Unionist Progressive Party',
-		shortName: 'VUPP',
-		codeName: 'VUPP',
-		colour: '#FF8C00',
-		kind: 'party'
-	},
-	{
-		id: 'gb-sinn-fein',
-		countryId: 'gb',
-		usualName: 'Sinn Féin',
-		englishName: 'Sinn Féin',
-		shortName: 'Sinn Féin',
-		codeName: 'SF',
-		colour: '#326760',
 		kind: 'party'
 	},
 	{
@@ -162,6 +122,16 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
+		id: 'gb-sinn-fein',
+		countryId: 'gb',
+		usualName: 'Sinn Féin',
+		englishName: 'Sinn Féin',
+		shortName: 'Sinn Féin',
+		codeName: 'SF',
+		colour: '#326760',
+		kind: 'party'
+	},
+	{
 		id: 'gb-tuv',
 		countryId: 'gb',
 		usualName: 'Traditional Unionist Voice',
@@ -172,23 +142,13 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'gb-upup',
+		id: 'gb-wpb',
 		countryId: 'gb',
-		usualName: 'Ulster Popular Unionist Party',
-		englishName: 'Ulster Popular Unionist Party',
-		shortName: 'UPUP',
-		codeName: 'UPUP',
-		colour: '#FFDEAD',
-		kind: 'party'
-	},
-	{
-		id: 'gb-upni',
-		countryId: 'gb',
-		usualName: 'Unionist Party of Northern Ireland',
-		englishName: 'Unionist Party of Northern Ireland',
-		shortName: 'UPNI',
-		codeName: 'UPNI',
-		colour: '#FFA07A',
+		usualName: 'Workers Party of Britain',
+		englishName: 'Workers Party of Britain',
+		shortName: 'Workers PB',
+		codeName: 'WPB',
+		colour: '#780021',
 		kind: 'party'
 	},
 	{
@@ -202,53 +162,73 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'gb-restore',
+		id: 'gb-ukip',
 		countryId: 'gb',
-		usualName: 'Restore Britain',
-		englishName: 'Restore Britain',
-		shortName: 'Restore',
-		codeName: 'RES',
-		colour: '#051D3F',
+		usualName: 'UK Independence Party',
+		englishName: 'UK Independence Party',
+		shortName: 'UKIP',
+		codeName: 'UKIP',
+		colour: '#70147A',
 		kind: 'party'
 	},
 	{
-		id: 'gb-national-front',
+		id: 'gb-brexit',
 		countryId: 'gb',
-		usualName: 'National Front',
-		englishName: 'National Front',
-		shortName: 'NF',
-		codeName: 'NF',
-		colour: '#191970',
+		usualName: 'Brexit Party',
+		englishName: 'Brexit Party',
+		shortName: 'Brexit',
+		codeName: 'BXP',
+		colour: '#12B6CF',
 		kind: 'party'
 	},
 	{
-		id: 'gb-english-democrats',
+		id: 'gb-change-uk',
 		countryId: 'gb',
-		usualName: 'English Democrats',
-		englishName: 'English Democrats',
-		shortName: 'Eng Dems',
-		codeName: 'ED',
-		colour: '#915F6D',
+		usualName: 'Change UK',
+		englishName: 'Change UK',
+		shortName: 'Change UK',
+		codeName: 'CHUK',
+		colour: '#0D0D0D',
 		kind: 'party'
 	},
 	{
-		id: 'gb-referendum',
+		id: 'gb-rejoin-eu',
 		countryId: 'gb',
-		usualName: 'Referendum Party',
-		englishName: 'Referendum Party',
-		shortName: 'Referendum',
-		codeName: 'RP',
-		colour: '#BF475C',
+		usualName: 'Rejoin EU',
+		englishName: 'Rejoin EU',
+		shortName: 'Rejoin',
+		codeName: 'REU',
+		colour: '#003399',
 		kind: 'party'
 	},
 	{
-		id: 'gb-ukup',
+		id: 'gb-alba',
 		countryId: 'gb',
-		usualName: 'UK Unionist Party',
-		englishName: 'UK Unionist Party',
-		shortName: 'UKUP',
-		codeName: 'UKUP',
-		colour: '#660066',
+		usualName: 'Alba Party',
+		englishName: 'Alba Party',
+		shortName: 'Alba',
+		codeName: 'ALB',
+		colour: '#005EB8',
+		kind: 'party'
+	},
+	{
+		id: 'gb-scottish-green',
+		countryId: 'gb',
+		usualName: 'Scottish Greens',
+		englishName: 'Scottish Greens',
+		shortName: 'Scot Green',
+		codeName: 'SGRN',
+		colour: '#8DC63F',
+		kind: 'party'
+	},
+	{
+		id: 'gb-green-ni',
+		countryId: 'gb',
+		usualName: 'Green Party Northern Ireland',
+		englishName: 'Green Party Northern Ireland',
+		shortName: 'NI Green',
+		codeName: 'GPNI',
+		colour: '#8DC63F',
 		kind: 'party'
 	},
 	{
@@ -282,123 +262,33 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'gb-change-uk',
+		id: 'gb-tusc',
 		countryId: 'gb',
-		usualName: 'Change UK',
-		englishName: 'Change UK',
-		shortName: 'Change UK',
-		codeName: 'CHUK',
-		colour: '#0D0D0D',
+		usualName: 'Trade Union & Socialist Coalition',
+		englishName: 'Trade Union & Socialist Coalition',
+		shortName: 'TUSC',
+		codeName: 'TUSC',
+		colour: '#EC008C',
 		kind: 'party'
 	},
 	{
-		id: 'gb-rejoin-eu',
+		id: 'gb-referendum',
 		countryId: 'gb',
-		usualName: 'Rejoin EU',
-		englishName: 'Rejoin EU',
-		shortName: 'Rejoin',
-		codeName: 'REU',
-		colour: '#003399',
+		usualName: 'Referendum Party',
+		englishName: 'Referendum Party',
+		shortName: 'Referendum',
+		codeName: 'RP',
+		colour: '#BF475C',
 		kind: 'party'
 	},
 	{
-		id: 'gb-mrlp',
+		id: 'gb-english-democrats',
 		countryId: 'gb',
-		usualName: 'Monster Raving Loony Party',
-		englishName: 'Monster Raving Loony Party',
-		shortName: 'MRLP',
-		codeName: 'MRLP',
-		colour: '#FFF000',
-		kind: 'party'
-	},
-	{
-		id: 'gb-christian',
-		countryId: 'gb',
-		usualName: 'Christian Peoples Alliance',
-		englishName: 'Christian Peoples Alliance',
-		shortName: 'Christian',
-		codeName: 'CPA',
-		colour: '#6142A3',
-		kind: 'party'
-	},
-	{
-		id: 'gb-natural-law',
-		countryId: 'gb',
-		usualName: 'Natural Law Party',
-		englishName: 'Natural Law Party',
-		shortName: 'Natural Law',
-		codeName: 'NLAW',
-		colour: '#FFE4E1',
-		kind: 'party'
-	},
-	{
-		id: 'gb-alba',
-		countryId: 'gb',
-		usualName: 'Alba Party',
-		englishName: 'Alba Party',
-		shortName: 'Alba',
-		codeName: 'ALB',
-		colour: '#005EB8',
-		kind: 'party'
-	},
-	{
-		id: 'gb-unity',
-		countryId: 'gb',
-		usualName: 'Unity - Ireland',
-		englishName: 'Unity - Ireland',
-		shortName: 'Unity',
-		codeName: 'UNI',
-		colour: '#808000',
-		kind: 'party'
-	},
-	{
-		id: 'gb-republican-labour',
-		countryId: 'gb',
-		usualName: 'Republican Labour Party',
-		englishName: 'Republican Labour Party',
-		shortName: 'Rep Labour',
-		codeName: 'RLP',
-		colour: '#85DE59',
-		kind: 'party'
-	},
-	{
-		id: 'gb-scottish-socialist',
-		countryId: 'gb',
-		usualName: 'Scottish Socialist Party',
-		englishName: 'Scottish Socialist Party',
-		shortName: 'SSP',
-		codeName: 'SSP',
-		colour: '#FF010B',
-		kind: 'party'
-	},
-	{
-		id: 'gb-scottish-green',
-		countryId: 'gb',
-		usualName: 'Scottish Greens',
-		englishName: 'Scottish Greens',
-		shortName: 'Scot Green',
-		codeName: 'SGRN',
-		colour: '#8DC63F',
-		kind: 'party'
-	},
-	{
-		id: 'gb-green-ni',
-		countryId: 'gb',
-		usualName: 'Green Party Northern Ireland',
-		englishName: 'Green Party Northern Ireland',
-		shortName: 'NI Green',
-		codeName: 'GPNI',
-		colour: '#8DC63F',
-		kind: 'party'
-	},
-	{
-		id: 'gb-health-concern',
-		countryId: 'gb',
-		usualName: 'Health Concern',
-		englishName: 'Health Concern',
-		shortName: 'Health Concern',
-		codeName: 'HC',
-		colour: '#FF69B4',
+		usualName: 'English Democrats',
+		englishName: 'English Democrats',
+		shortName: 'Eng Dems',
+		codeName: 'ED',
+		colour: '#915F6D',
 		kind: 'party'
 	},
 	{
@@ -412,13 +302,13 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'gb-mk',
+		id: 'gb-pbp',
 		countryId: 'gb',
-		usualName: 'Mebyon Kernow',
-		englishName: 'Mebyon Kernow',
-		shortName: 'MK',
-		codeName: 'MK',
-		colour: '#CCCC00',
+		usualName: 'People Before Profit',
+		englishName: 'People Before Profit',
+		shortName: 'PBP',
+		codeName: 'PBP',
+		colour: '#D62249',
 		kind: 'party'
 	},
 	{
@@ -432,53 +322,33 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'gb-wpb',
+		id: 'gb-mrlp',
 		countryId: 'gb',
-		usualName: 'Workers Party of Britain',
-		englishName: 'Workers Party of Britain',
-		shortName: 'Workers PB',
-		codeName: 'WPB',
-		colour: '#780021',
+		usualName: 'Monster Raving Loony Party',
+		englishName: 'Monster Raving Loony Party',
+		shortName: 'MRLP',
+		codeName: 'MRLP',
+		colour: '#FFF000',
 		kind: 'party'
 	},
 	{
-		id: 'gb-tusc',
+		id: 'gb-scottish-socialist',
 		countryId: 'gb',
-		usualName: 'Trade Union & Socialist Coalition',
-		englishName: 'Trade Union & Socialist Coalition',
-		shortName: 'TUSC',
-		codeName: 'TUSC',
-		colour: '#EC008C',
+		usualName: 'Scottish Socialist Party',
+		englishName: 'Scottish Socialist Party',
+		shortName: 'SSP',
+		codeName: 'SSP',
+		colour: '#FF010B',
 		kind: 'party'
 	},
 	{
-		id: 'gb-pbp',
+		id: 'gb-christian',
 		countryId: 'gb',
-		usualName: 'People Before Profit',
-		englishName: 'People Before Profit',
-		shortName: 'PBP',
-		codeName: 'PBP',
-		colour: '#D62249',
-		kind: 'party'
-	},
-	{
-		id: 'gb-slp',
-		countryId: 'gb',
-		usualName: 'Socialist Labour Party',
-		englishName: 'Socialist Labour Party',
-		shortName: 'SLP',
-		codeName: 'SLP',
-		colour: '#CE0000',
-		kind: 'party'
-	},
-	{
-		id: 'gb-ilp',
-		countryId: 'gb',
-		usualName: 'Independent Labour Party',
-		englishName: 'Independent Labour Party',
-		shortName: 'Ind Labour',
-		codeName: 'ILP',
-		colour: '#FFBBBB',
+		usualName: 'Christian Peoples Alliance',
+		englishName: 'Christian Peoples Alliance',
+		shortName: 'Christian',
+		codeName: 'CPA',
+		colour: '#6142A3',
 		kind: 'party'
 	},
 	{
@@ -492,6 +362,56 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
+		id: 'gb-slp',
+		countryId: 'gb',
+		usualName: 'Socialist Labour Party',
+		englishName: 'Socialist Labour Party',
+		shortName: 'SLP',
+		codeName: 'SLP',
+		colour: '#CE0000',
+		kind: 'party'
+	},
+	{
+		id: 'gb-health-concern',
+		countryId: 'gb',
+		usualName: 'Health Concern',
+		englishName: 'Health Concern',
+		shortName: 'Health Concern',
+		codeName: 'HC',
+		colour: '#FF69B4',
+		kind: 'party'
+	},
+	{
+		id: 'gb-national-front',
+		countryId: 'gb',
+		usualName: 'National Front',
+		englishName: 'National Front',
+		shortName: 'NF',
+		codeName: 'NF',
+		colour: '#191970',
+		kind: 'party'
+	},
+	{
+		id: 'gb-mk',
+		countryId: 'gb',
+		usualName: 'Mebyon Kernow',
+		englishName: 'Mebyon Kernow',
+		shortName: 'MK',
+		codeName: 'MK',
+		colour: '#CCCC00',
+		kind: 'party'
+	},
+	{
+		id: 'gb-natural-law',
+		countryId: 'gb',
+		usualName: 'Natural Law Party',
+		englishName: 'Natural Law Party',
+		shortName: 'Natural Law',
+		codeName: 'NLAW',
+		colour: '#FFE4E1',
+		kind: 'party'
+	},
+	{
 		id: 'gb-wrp',
 		countryId: 'gb',
 		usualName: 'Workers Revolutionary Party',
@@ -502,6 +422,16 @@ export const gbParties: Party[] = [
 		kind: 'party'
 	},
 	{
+		id: 'gb-ukup',
+		countryId: 'gb',
+		usualName: 'UK Unionist Party',
+		englishName: 'UK Unionist Party',
+		shortName: 'UKUP',
+		codeName: 'UKUP',
+		colour: '#660066',
+		kind: 'party'
+	},
+	{
 		id: 'gb-communist',
 		countryId: 'gb',
 		usualName: 'Communist Party of Great Britain',
@@ -509,6 +439,76 @@ export const gbParties: Party[] = [
 		shortName: 'Communist',
 		codeName: 'CPGB',
 		colour: '#FF0000',
+		kind: 'party'
+	},
+	{
+		id: 'gb-upup',
+		countryId: 'gb',
+		usualName: 'Ulster Popular Unionist Party',
+		englishName: 'Ulster Popular Unionist Party',
+		shortName: 'UPUP',
+		codeName: 'UPUP',
+		colour: '#FFDEAD',
+		kind: 'party'
+	},
+	{
+		id: 'gb-vupp',
+		countryId: 'gb',
+		usualName: 'Vanguard Unionist Progressive Party',
+		englishName: 'Vanguard Unionist Progressive Party',
+		shortName: 'VUPP',
+		codeName: 'VUPP',
+		colour: '#FF8C00',
+		kind: 'party'
+	},
+	{
+		id: 'gb-unity',
+		countryId: 'gb',
+		usualName: 'Unity - Ireland',
+		englishName: 'Unity - Ireland',
+		shortName: 'Unity',
+		codeName: 'UNI',
+		colour: '#808000',
+		kind: 'party'
+	},
+	{
+		id: 'gb-upni',
+		countryId: 'gb',
+		usualName: 'Unionist Party of Northern Ireland',
+		englishName: 'Unionist Party of Northern Ireland',
+		shortName: 'UPNI',
+		codeName: 'UPNI',
+		colour: '#FFA07A',
+		kind: 'party'
+	},
+	{
+		id: 'gb-uuup',
+		countryId: 'gb',
+		usualName: 'United Ulster Unionist Party',
+		englishName: 'United Ulster Unionist Party',
+		shortName: 'UUUP',
+		codeName: 'UUUP',
+		colour: '#FF8C00',
+		kind: 'party'
+	},
+	{
+		id: 'gb-republican-labour',
+		countryId: 'gb',
+		usualName: 'Republican Labour Party',
+		englishName: 'Republican Labour Party',
+		shortName: 'Rep Labour',
+		codeName: 'RLP',
+		colour: '#85DE59',
+		kind: 'party'
+	},
+	{
+		id: 'gb-ilp',
+		countryId: 'gb',
+		usualName: 'Independent Labour Party',
+		englishName: 'Independent Labour Party',
+		shortName: 'Ind Labour',
+		codeName: 'ILP',
+		colour: '#FFBBBB',
 		kind: 'party'
 	},
 	{

@@ -6,6 +6,14 @@
 
 	const errors = issues.filter((issue) => issue.severity === 'error');
 	const warnings = issues.filter((issue) => issue.severity === 'warning');
+	const electionCount = countryDatasets.reduce(
+		(total, dataset) => total + dataset.elections.length,
+		0
+	);
+
+	function issueKey(issue: (typeof issues)[number], index: number): string {
+		return `${issue.severity}-${issue.countryId}-${issue.electionId ?? 'country'}-${index}`;
+	}
 </script>
 
 <svelte:head>
@@ -30,6 +38,11 @@
 			<span>Countries</span>
 			<strong>{countryDatasets.length}</strong>
 		</div>
+
+		<div>
+			<span>Elections</span>
+			<strong>{electionCount}</strong>
+		</div>
 	</section>
 
 	{#if issues.length === 0}
@@ -52,7 +65,7 @@
 				</thead>
 
 				<tbody>
-					{#each issues as issue}
+					{#each issues as issue, index (issueKey(issue, index))}
 						<tr class:error-row={issue.severity === 'error'}>
 							<td>{issue.severity}</td>
 							<td>{issue.countryId}</td>
@@ -80,7 +93,7 @@
 
 	.summary {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 12px;
 		margin-bottom: 20px;
 	}

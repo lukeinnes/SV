@@ -24,6 +24,23 @@ export type ElectionPartyResult = {
 	seatsWon: number;
 };
 
+export type KEquivalentStatus =
+	| 'found'
+	| 'target_below_vote_share'
+	| 'target_below_proportional'
+	| 'target_unreachable'
+	| 'no_clear_vote_leader'
+	| 'no_vote_leader'
+	| 'no_eligible_target'
+	| 'not_calculated';
+
+export type KEquivalent = {
+	value: number | null;
+	status: KEquivalentStatus;
+	partyId: string;
+	note?: string;
+};
+
 export type Election = {
 	id: string;
 	countryId: string;
@@ -32,6 +49,7 @@ export type Election = {
 	actualSeatAllocation?: string;
 	totalVotes: number;
 	totalSeats: number;
+	kEquivalent?: KEquivalent;
 	results: ElectionPartyResult[];
 	sourceNote?: string;
 };

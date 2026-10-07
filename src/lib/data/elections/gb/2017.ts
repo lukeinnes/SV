@@ -8,6 +8,12 @@ export const gb2017: Election = {
 	actualSeatAllocation: 'FPTP',
 	totalVotes: 32202832,
 	totalSeats: 650,
+	kEquivalent: {
+		value: 4.069272,
+		status: 'found',
+		partyId: 'gb-conservative',
+		note: 'Representative k within interval [3.996221, 4.142322]'
+	},
 	results: [
 		{
 			partyId: 'gb-conservative',

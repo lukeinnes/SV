@@ -8,6 +8,12 @@ export const gb1974Feb: Election = {
 	actualSeatAllocation: 'FPTP',
 	totalVotes: 31335678,
 	totalSeats: 635,
+	kEquivalent: {
+		value: 8.270057,
+		status: 'found',
+		partyId: 'gb-conservative',
+		note: 'Vote-leading party matches its actual 296 seats for k approximately 8.1515–8.3886.'
+	},
 	results: [
 		{
 			partyId: 'gb-conservative',

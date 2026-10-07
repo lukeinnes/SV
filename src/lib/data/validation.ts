@@ -10,6 +10,17 @@ export type DataIssue = {
 	message: string;
 };
 
+const VALID_K_EQUIVALENT_STATUSES = new Set([
+	'found',
+	'target_below_vote_share',
+	'target_below_proportional',
+	'target_unreachable',
+	'no_clear_vote_leader',
+	'no_vote_leader',
+	'no_eligible_target',
+	'not_calculated'
+]);
+
 function sumVotes(election: Election): number {
 	return election.results.reduce((total, result) => total + result.votes, 0);
 }
@@ -26,6 +37,14 @@ export function validateDataset(dataset: CountryDataset): DataIssue[] {
 
 	validateCountry(country, issues);
 	validateParties(country, parties, issues);
+
+	if (elections.length === 0) {
+		issues.push({
+			severity: 'error',
+			countryId: country.id,
+			message: `${country.name} has no elections.`
+		});
+	}
 
 	for (const election of elections) {
 		validateElection(country, election, partyById, issues);
@@ -78,11 +97,27 @@ function validateParties(country: Country, parties: Party[], issues: DataIssue[]
 			});
 		}
 
+		if (!party.id.startsWith(`${country.id}-`)) {
+			issues.push({
+				severity: 'error',
+				countryId: country.id,
+				message: `Party ${party.id} does not start with ${country.id}-.`
+			});
+		}
+
 		if (!party.usualName || !party.englishName || !party.shortName || !party.codeName || !party.colour) {
 			issues.push({
 				severity: 'error',
 				countryId: country.id,
 				message: `Party ${party.id} is missing name/code/colour metadata.`
+			});
+		}
+
+		if (!/^#[0-9A-Fa-f]{6}$/.test(party.colour)) {
+			issues.push({
+				severity: 'error',
+				countryId: country.id,
+				message: `Party ${party.id} has invalid colour ${party.colour}.`
 			});
 		}
 	}
@@ -102,6 +137,8 @@ function validateElection(
 			message: `Election ${election.id} belongs to ${election.countryId}, but is listed under ${country.id}.`
 		});
 	}
+
+	validateKEquivalent(country, election, partyById, issues);
 
 	const seenPartyIds = new Set<string>();
 
@@ -179,6 +216,84 @@ function validateElection(
 			countryId: country.id,
 			electionId: election.id,
 			message: `Result seats sum to ${resultSeats}, but election.totalSeats is ${election.totalSeats}. Difference: ${seatDifference}.`
+		});
+	}
+}
+
+function validateKEquivalent(
+	country: Country,
+	election: Election,
+	partyById: Map<string, Party>,
+	issues: DataIssue[]
+): void {
+	const metadata = election.kEquivalent;
+
+	if (!metadata) {
+		issues.push({
+			severity: 'warning',
+			countryId: country.id,
+			electionId: election.id,
+			message: `Election has no kEquivalent metadata.`
+		});
+
+		return;
+	}
+
+	if (!VALID_K_EQUIVALENT_STATUSES.has(metadata.status)) {
+		issues.push({
+			severity: 'error',
+			countryId: country.id,
+			electionId: election.id,
+			message: `kEquivalent has invalid status ${metadata.status}.`
+		});
+	}
+
+	if (metadata.status === 'found') {
+		if (typeof metadata.value !== 'number' || !Number.isFinite(metadata.value) || metadata.value < 0) {
+			issues.push({
+				severity: 'error',
+				countryId: country.id,
+				electionId: election.id,
+				message: `kEquivalent status is found, but value is not a valid non-negative number.`
+			});
+		}
+	} else if (metadata.value !== null) {
+		issues.push({
+			severity: 'warning',
+			countryId: country.id,
+			electionId: election.id,
+			message: `kEquivalent value is usually expected to be null unless status is found.`
+		});
+	}
+
+	const targetParty = partyById.get(metadata.partyId);
+
+	if (!targetParty) {
+		issues.push({
+			severity: 'error',
+			countryId: country.id,
+			electionId: election.id,
+			message: `kEquivalent references unknown party ${metadata.partyId}.`
+		});
+
+		return;
+	}
+
+	if (targetParty.kind !== 'party') {
+		issues.push({
+			severity: 'error',
+			countryId: country.id,
+			electionId: election.id,
+			message: `kEquivalent target ${metadata.partyId} has kind ${targetParty.kind}, but should be a party.`
+		});
+	}
+
+	if (!election.results.some((result) => result.partyId === metadata.partyId)) {
+		issues.push({
+			severity: 'error',
+			countryId: country.id,
+			electionId: election.id,
+			message: `kEquivalent target ${metadata.partyId} is not present in the election result rows.`
 		});
 	}
 }
