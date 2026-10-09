@@ -8,6 +8,12 @@ export const ca2011: Election = {
 	actualSeatAllocation: 'FPTP',
 	totalVotes: 14723980,
 	totalSeats: 308,
+	kEquivalent: {
+		value: 5.677582,
+		status: 'found',
+		partyId: 'ca-conservative',
+		note: 'Representative k within interval [5.631569, 5.723596]'
+	},
 	results: [
 		{
 			partyId: 'ca-conservative',

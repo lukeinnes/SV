@@ -102,13 +102,13 @@ export const fiParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'fi-communist',
+		id: 'fi-blue-reform',
 		countryId: 'fi',
-		usualName: 'Suomen Kommunistinen Puolue',
-		englishName: 'Communist Party of Finland',
-		shortName: 'SKP',
-		codeName: 'SKP',
-		colour: '#D71920',
+		usualName: 'Sininen tulevaisuus',
+		englishName: 'Blue Reform',
+		shortName: 'Siniset',
+		codeName: 'SIN',
+		colour: '#2B5D9B',
 		kind: 'party'
 	},
 	{
@@ -122,6 +122,16 @@ export const fiParties: Party[] = [
 		kind: 'party'
 	},
 	{
+		id: 'fi-for-aland',
+		countryId: 'fi',
+		usualName: 'För Åland',
+		englishName: 'For Åland',
+		shortName: 'För Åland',
+		codeName: 'FA',
+		colour: '#5DADE2',
+		kind: 'party'
+	},
+	{
 		id: 'fi-citizens-union',
 		countryId: 'fi',
 		usualName: 'Kansalaisliitto',
@@ -129,6 +139,16 @@ export const fiParties: Party[] = [
 		shortName: 'Kansalaisliitto',
 		codeName: 'KANS',
 		colour: '#8B6F47',
+		kind: 'party'
+	},
+	{
+		id: 'fi-centre-liberal-alliance',
+		countryId: 'fi',
+		usualName: 'Keskustapuolue–Liberaalinen Kansanpuolue',
+		englishName: 'Centre Party–Liberal People\'s Party Alliance',
+		shortName: 'Kesk–Lib',
+		codeName: 'KESK-LIB',
+		colour: '#7FAE3A',
 		kind: 'party'
 	},
 	{
@@ -142,6 +162,16 @@ export const fiParties: Party[] = [
 		kind: 'party'
 	},
 	{
+		id: 'fi-aland-coalition-2015',
+		countryId: 'fi',
+		usualName: 'Åländsk samling 2015',
+		englishName: 'Åland Coalition 2015',
+		shortName: 'Åländsk samling',
+		codeName: 'AS15',
+		colour: '#5DADE2',
+		kind: 'party'
+	},
+	{
 		id: 'fi-rural',
 		countryId: 'fi',
 		usualName: 'Suomen Maaseudun Puolue',
@@ -149,36 +179,6 @@ export const fiParties: Party[] = [
 		shortName: 'SMP',
 		codeName: 'SMP',
 		colour: '#4F7942',
-		kind: 'party'
-	},
-	{
-		id: 'fi-liberals',
-		countryId: 'fi',
-		usualName: 'Liberaalit',
-		englishName: 'Liberals',
-		shortName: 'Liberaalit',
-		codeName: 'LIB',
-		colour: '#F6C400',
-		kind: 'party'
-	},
-	{
-		id: 'fi-democratic-alternative',
-		countryId: 'fi',
-		usualName: 'Demokraattinen vaihtoehto',
-		englishName: 'Democratic Alternative',
-		shortName: 'DEVA',
-		codeName: 'DEVA',
-		colour: '#C1272D',
-		kind: 'party'
-	},
-	{
-		id: 'fi-tpsl',
-		countryId: 'fi',
-		usualName: 'Työväen ja Pienviljelijäin Sosialidemokraattinen Liitto',
-		englishName: 'Social Democratic Union of Workers and Smallholders',
-		shortName: 'TPSL',
-		codeName: 'TPSL',
-		colour: '#C0504D',
 		kind: 'party'
 	},
 	{
@@ -192,13 +192,113 @@ export const fiParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'fi-blue-reform',
+		id: 'fi-communist',
 		countryId: 'fi',
-		usualName: 'Sininen tulevaisuus',
-		englishName: 'Blue Reform',
-		shortName: 'Siniset',
-		codeName: 'SIN',
-		colour: '#2B5D9B',
+		usualName: 'Suomen Kommunistinen Puolue',
+		englishName: 'Communist Party of Finland',
+		shortName: 'SKP',
+		codeName: 'SKP',
+		colour: '#D71920',
+		kind: 'party'
+	},
+	{
+		id: 'fi-senior-citizens',
+		countryId: 'fi',
+		usualName: 'Suomen Senioripuolue',
+		englishName: 'Finnish Senior Citizens\' Party',
+		shortName: 'Senioripuolue',
+		codeName: 'SSP',
+		colour: '#9B59B6',
+		kind: 'party'
+	},
+	{
+		id: 'fi-aland-coalition-2011',
+		countryId: 'fi',
+		usualName: 'Åländsk samling 2011',
+		englishName: 'Åland Coalition 2011',
+		shortName: 'Åländsk samling',
+		codeName: 'AS11',
+		colour: '#5DADE2',
+		kind: 'party'
+	},
+	{
+		id: 'fi-reform-group',
+		countryId: 'fi',
+		usualName: 'Remonttiryhmä',
+		englishName: 'Reform Group',
+		shortName: 'Remonttiryhmä',
+		codeName: 'REM',
+		colour: '#8C564B',
+		kind: 'party'
+	},
+	{
+		id: 'fi-democratic-alternative',
+		countryId: 'fi',
+		usualName: 'Demokraattinen vaihtoehto',
+		englishName: 'Democratic Alternative',
+		shortName: 'DEVA',
+		codeName: 'DEVA',
+		colour: '#C1272D',
+		kind: 'party'
+	},
+	{
+		id: 'fi-bourgeois-alliance-aland',
+		countryId: 'fi',
+		usualName: 'Borgerlig Allians',
+		englishName: 'Bourgeois Alliance',
+		shortName: 'Borgerlig Allians',
+		codeName: 'BORG',
+		colour: '#5DADE2',
+		kind: 'party'
+	},
+	{
+		id: 'fi-liberals',
+		countryId: 'fi',
+		usualName: 'Liberaalit',
+		englishName: 'Liberals',
+		shortName: 'Liberaalit',
+		codeName: 'LIB',
+		colour: '#F6C400',
+		kind: 'party'
+	},
+	{
+		id: 'fi-ecological-green',
+		countryId: 'fi',
+		usualName: 'Kirjava Puolue – Elonkehän Puolesta',
+		englishName: 'Ecological Party / KIPU',
+		shortName: 'KIPU',
+		codeName: 'KIPU',
+		colour: '#3A8F3A',
+		kind: 'party'
+	},
+	{
+		id: 'fi-pensioners',
+		countryId: 'fi',
+		usualName: 'Suomen Eläkeläisten Puolue',
+		englishName: 'Pensioners\' Party',
+		shortName: 'SEP',
+		codeName: 'SEP',
+		colour: '#777777',
+		kind: 'party'
+	},
+	{
+		id: 'fi-fs-unbound-aland',
+		countryId: 'fi',
+		usualName: 'FS – Obundna',
+		englishName: 'Freeminded Co-operation–Non-aligned Coalition',
+		shortName: 'FS–Obundna',
+		codeName: 'FSOB',
+		colour: '#5DADE2',
+		kind: 'party'
+	},
+	{
+		id: 'fi-liberals-aland',
+		countryId: 'fi',
+		usualName: 'Liberalerna på Åland',
+		englishName: 'Liberals for Åland',
+		shortName: 'Liberalerna',
+		codeName: 'LAL',
+		colour: '#5DADE2',
 		kind: 'party'
 	},
 	{
@@ -222,72 +322,12 @@ export const fiParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'fi-reform-group',
+		id: 'fi-list-c-aland-1991',
 		countryId: 'fi',
-		usualName: 'Remonttiryhmä',
-		englishName: 'Reform Group',
-		shortName: 'Remonttiryhmä',
-		codeName: 'REM',
-		colour: '#8C564B',
-		kind: 'party'
-	},
-	{
-		id: 'fi-pensioners',
-		countryId: 'fi',
-		usualName: 'Suomen Eläkeläisten Puolue',
-		englishName: 'Pensioners\' Party',
-		shortName: 'SEP',
-		codeName: 'SEP',
-		colour: '#777777',
-		kind: 'party'
-	},
-	{
-		id: 'fi-senior-citizens',
-		countryId: 'fi',
-		usualName: 'Suomen Senioripuolue',
-		englishName: 'Finnish Senior Citizens\' Party',
-		shortName: 'Senioripuolue',
-		codeName: 'SSP',
-		colour: '#9B59B6',
-		kind: 'party'
-	},
-	{
-		id: 'fi-ecological-green',
-		countryId: 'fi',
-		usualName: 'Kirjava Puolue – Elonkehän Puolesta',
-		englishName: 'Ecological Party / KIPU',
-		shortName: 'KIPU',
-		codeName: 'KIPU',
-		colour: '#3A8F3A',
-		kind: 'party'
-	},
-	{
-		id: 'fi-centre-liberal-alliance',
-		countryId: 'fi',
-		usualName: 'Keskustapuolue–Liberaalinen Kansanpuolue',
-		englishName: 'Centre Party–Liberal People\'s Party Alliance',
-		shortName: 'Kesk–Lib',
-		codeName: 'KESK-LIB',
-		colour: '#7FAE3A',
-		kind: 'party'
-	},
-	{
-		id: 'fi-aland-coalition',
-		countryId: 'fi',
-		usualName: 'Åländsk samling',
-		englishName: 'Åland Coalition',
-		shortName: 'Åländsk samling',
-		codeName: 'AS',
-		colour: '#5DADE2',
-		kind: 'party'
-	},
-	{
-		id: 'fi-liberals-aland',
-		countryId: 'fi',
-		usualName: 'Liberalerna på Åland',
-		englishName: 'Liberals for Åland',
-		shortName: 'Liberalerna',
-		codeName: 'LAL',
+		usualName: 'Lista C (FS–Gröna–L)',
+		englishName: 'List C (Freeminded–Greens–Liberals)',
+		shortName: 'Lista C',
+		codeName: 'LISTA-C',
 		colour: '#5DADE2',
 		kind: 'party'
 	},
@@ -302,62 +342,22 @@ export const fiParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'fi-list-c-aland-1991',
+		id: 'fi-tpsl',
 		countryId: 'fi',
-		usualName: 'Lista C (FS–Gröna–L)',
-		englishName: 'List C (Freeminded–Greens–Liberals)',
-		shortName: 'Lista C',
-		codeName: 'LISTA-C',
-		colour: '#5DADE2',
+		usualName: 'Työväen ja Pienviljelijäin Sosialidemokraattinen Liitto',
+		englishName: 'Social Democratic Union of Workers and Smallholders',
+		shortName: 'TPSL',
+		codeName: 'TPSL',
+		colour: '#C0504D',
 		kind: 'party'
 	},
 	{
-		id: 'fi-fs-unbound-aland',
+		id: 'fi-aland-coalition',
 		countryId: 'fi',
-		usualName: 'FS – Obundna',
-		englishName: 'Freeminded Co-operation–Non-aligned Coalition',
-		shortName: 'FS–Obundna',
-		codeName: 'FSOB',
-		colour: '#5DADE2',
-		kind: 'party'
-	},
-	{
-		id: 'fi-bourgeois-alliance-aland',
-		countryId: 'fi',
-		usualName: 'Borgerlig Allians',
-		englishName: 'Bourgeois Alliance',
-		shortName: 'Borgerlig Allians',
-		codeName: 'BORG',
-		colour: '#5DADE2',
-		kind: 'party'
-	},
-	{
-		id: 'fi-aland-coalition-2011',
-		countryId: 'fi',
-		usualName: 'Åländsk samling 2011',
-		englishName: 'Åland Coalition 2011',
+		usualName: 'Åländsk samling',
+		englishName: 'Åland Coalition',
 		shortName: 'Åländsk samling',
-		codeName: 'AS11',
-		colour: '#5DADE2',
-		kind: 'party'
-	},
-	{
-		id: 'fi-aland-coalition-2015',
-		countryId: 'fi',
-		usualName: 'Åländsk samling 2015',
-		englishName: 'Åland Coalition 2015',
-		shortName: 'Åländsk samling',
-		codeName: 'AS15',
-		colour: '#5DADE2',
-		kind: 'party'
-	},
-	{
-		id: 'fi-for-aland',
-		countryId: 'fi',
-		usualName: 'För Åland',
-		englishName: 'For Åland',
-		shortName: 'För Åland',
-		codeName: 'FA',
+		codeName: 'AS',
 		colour: '#5DADE2',
 		kind: 'party'
 	},

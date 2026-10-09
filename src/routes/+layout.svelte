@@ -13,6 +13,7 @@
 	const dataCheckHref = resolve('/data-check');
 	const engineTestHref = resolve('/engine-test');
 	const realEngineTestHref = resolve('/real-engine-test');
+	const graphTestHref = resolve('/graph-test');
 
 	function isActive(pathname: string): boolean {
 		if (pathname === '/') {
@@ -54,6 +55,7 @@
 			<a href={dataCheckHref} class={activeClass('/data-check')}>Data check</a>
 			<a href={engineTestHref} class={activeClass('/engine-test')}>Engine test</a>
 			<a href={realEngineTestHref} class={activeClass('/real-engine-test')}>Real engine test</a>
+			<a href={graphTestHref} class={activeClass('/graph-test')}>Graph test</a>
 		</nav>
 	</div>
 </header>

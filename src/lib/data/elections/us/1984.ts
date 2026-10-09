@@ -8,6 +8,12 @@ export const us1984: Election = {
 	actualSeatAllocation: 'FPTP',
 	totalVotes: 82421838,
 	totalSeats: 435,
+	kEquivalent: {
+		value: 5.896913,
+		status: 'found',
+		partyId: 'us-democratic',
+		note: 'Representative k within interval [5.795678, 5.998148]'
+	},
 	results: [
 		{
 			partyId: 'us-democratic',

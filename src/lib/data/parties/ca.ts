@@ -7,7 +7,7 @@ export const caParties: Party[] = [
 		usualName: 'Liberal Party of Canada',
 		englishName: 'Liberal Party of Canada',
 		shortName: 'Liberal',
-		codeName: 'LIB',
+		codeName: 'LPC',
 		colour: '#D71920',
 		kind: 'party'
 	},
@@ -17,18 +17,8 @@ export const caParties: Party[] = [
 		usualName: 'Conservative Party of Canada',
 		englishName: 'Conservative Party of Canada',
 		shortName: 'Conservative',
-		codeName: 'CON',
+		codeName: 'CPC',
 		colour: '#1A4782',
-		kind: 'party'
-	},
-	{
-		id: 'ca-ndp',
-		countryId: 'ca',
-		usualName: 'New Democratic Party',
-		englishName: 'New Democratic Party',
-		shortName: 'NDP',
-		codeName: 'NDP',
-		colour: '#F58220',
 		kind: 'party'
 	},
 	{
@@ -42,13 +32,13 @@ export const caParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'ca-progressive-conservative',
+		id: 'ca-ndp',
 		countryId: 'ca',
-		usualName: 'Progressive Conservative Party of Canada',
-		englishName: 'Progressive Conservative Party of Canada',
-		shortName: 'Progressive Conservative',
-		codeName: 'PC',
-		colour: '#285C9A',
+		usualName: 'New Democratic Party',
+		englishName: 'New Democratic Party',
+		shortName: 'NDP',
+		codeName: 'NDP',
+		colour: '#F58220',
 		kind: 'party'
 	},
 	{
@@ -57,7 +47,7 @@ export const caParties: Party[] = [
 		usualName: 'Green Party of Canada',
 		englishName: 'Green Party of Canada',
 		shortName: 'Green',
-		codeName: 'GRN',
+		codeName: 'GPC',
 		colour: '#3D9B35',
 		kind: 'party'
 	},
@@ -72,13 +62,33 @@ export const caParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'ca-reform',
+		id: 'ca-christian-heritage',
 		countryId: 'ca',
-		usualName: 'Reform Party of Canada',
-		englishName: 'Reform Party of Canada',
-		shortName: 'Reform',
-		codeName: 'REF',
-		colour: '#167B5B',
+		usualName: 'Christian Heritage Party of Canada',
+		englishName: 'Christian Heritage Party of Canada',
+		shortName: 'Christian Heritage',
+		codeName: 'CHP',
+		colour: '#7A263A',
+		kind: 'party'
+	},
+	{
+		id: 'ca-rhinoceros',
+		countryId: 'ca',
+		usualName: 'Rhinoceros Party',
+		englishName: 'Rhinoceros Party',
+		shortName: 'Rhinoceros',
+		codeName: 'RHINO',
+		colour: '#666666',
+		kind: 'party'
+	},
+	{
+		id: 'ca-libertarian',
+		countryId: 'ca',
+		usualName: 'Libertarian Party of Canada',
+		englishName: 'Libertarian Party of Canada',
+		shortName: 'Libertarian',
+		codeName: 'LIBT',
+		colour: '#E2B93B',
 		kind: 'party'
 	},
 	{
@@ -92,43 +102,23 @@ export const caParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'ca-social-credit',
+		id: 'ca-reform',
 		countryId: 'ca',
-		usualName: 'Social Credit Party of Canada',
-		englishName: 'Social Credit Party of Canada',
-		shortName: 'Social Credit',
-		codeName: 'SC',
-		colour: '#2F7D32',
+		usualName: 'Reform Party of Canada',
+		englishName: 'Reform Party of Canada',
+		shortName: 'Reform',
+		codeName: 'REF',
+		colour: '#167B5B',
 		kind: 'party'
 	},
 	{
-		id: 'ca-christian-heritage',
+		id: 'ca-progressive-conservative',
 		countryId: 'ca',
-		usualName: 'Christian Heritage Party of Canada',
-		englishName: 'Christian Heritage Party of Canada',
-		shortName: 'Christian Heritage',
-		codeName: 'CHP',
-		colour: '#7A263A',
-		kind: 'party'
-	},
-	{
-		id: 'ca-confederation-regions',
-		countryId: 'ca',
-		usualName: 'Confederation of Regions Party',
-		englishName: 'Confederation of Regions Party',
-		shortName: 'Confederation of Regions',
-		codeName: 'COR',
-		colour: '#8A6D3B',
-		kind: 'party'
-	},
-	{
-		id: 'ca-parti-nationaliste-quebec',
-		countryId: 'ca',
-		usualName: 'Parti nationaliste du Québec',
-		englishName: 'Nationalist Party of Quebec',
-		shortName: 'Parti nationaliste',
-		codeName: 'PNQ',
-		colour: '#667FA8',
+		usualName: 'Progressive Conservative Party of Canada',
+		englishName: 'Progressive Conservative Party of Canada',
+		shortName: 'Progressive Conservative',
+		codeName: 'PC',
+		colour: '#285C9A',
 		kind: 'party'
 	},
 	{
@@ -152,6 +142,16 @@ export const caParties: Party[] = [
 		kind: 'party'
 	},
 	{
+		id: 'ca-marijuana',
+		countryId: 'ca',
+		usualName: 'Marijuana Party',
+		englishName: 'Marijuana Party',
+		shortName: 'Marijuana',
+		codeName: 'MJ',
+		colour: '#4A8F46',
+		kind: 'party'
+	},
+	{
 		id: 'ca-communist',
 		countryId: 'ca',
 		usualName: 'Communist Party of Canada',
@@ -162,23 +162,13 @@ export const caParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'ca-libertarian',
+		id: 'ca-social-credit',
 		countryId: 'ca',
-		usualName: 'Libertarian Party of Canada',
-		englishName: 'Libertarian Party of Canada',
-		shortName: 'Libertarian',
-		codeName: 'LIBT',
-		colour: '#E2B93B',
-		kind: 'party'
-	},
-	{
-		id: 'ca-rhinoceros',
-		countryId: 'ca',
-		usualName: 'Rhinoceros Party',
-		englishName: 'Rhinoceros Party',
-		shortName: 'Rhinoceros',
-		codeName: 'RHINO',
-		colour: '#666666',
+		usualName: 'Social Credit Party of Canada',
+		englishName: 'Social Credit Party of Canada',
+		shortName: 'Social Credit',
+		codeName: 'SC',
+		colour: '#2F7D32',
 		kind: 'party'
 	},
 	{
@@ -192,13 +182,23 @@ export const caParties: Party[] = [
 		kind: 'party'
 	},
 	{
-		id: 'ca-marijuana',
+		id: 'ca-parti-nationaliste-quebec',
 		countryId: 'ca',
-		usualName: 'Marijuana Party',
-		englishName: 'Marijuana Party',
-		shortName: 'Marijuana',
-		codeName: 'MJ',
-		colour: '#4A8F46',
+		usualName: 'Parti nationaliste du Québec',
+		englishName: 'Nationalist Party of Quebec',
+		shortName: 'Parti nationaliste',
+		codeName: 'PNQ',
+		colour: '#667FA8',
+		kind: 'party'
+	},
+	{
+		id: 'ca-confederation-regions',
+		countryId: 'ca',
+		usualName: 'Confederation of Regions Party',
+		englishName: 'Confederation of Regions Party',
+		shortName: 'Confederation of Regions',
+		codeName: 'COR',
+		colour: '#8A6D3B',
 		kind: 'party'
 	},
 	{

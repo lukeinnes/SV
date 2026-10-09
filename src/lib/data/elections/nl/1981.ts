@@ -8,6 +8,12 @@ export const nl1981: Election = {
 	actualSeatAllocation: 'PR',
 	totalVotes: 8690837,
 	totalSeats: 150,
+	kEquivalent: {
+		value: 0.317117,
+		status: 'found',
+		partyId: 'nl-cda',
+		note: 'Representative k within interval [0.112316, 0.521917]'
+	},
 	results: [
 		{
 			partyId: 'nl-cda',

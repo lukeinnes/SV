@@ -8,6 +8,12 @@ export const fi2007: Election = {
 	actualSeatAllocation: 'PR',
 	totalVotes: 2771236,
 	totalSeats: 200,
+	kEquivalent: {
+		value: 2.986098,
+		status: 'found',
+		partyId: 'fi-centre',
+		note: 'Representative k within interval [2.796151, 3.176046]'
+	},
 	results: [
 		{
 			partyId: 'fi-centre',

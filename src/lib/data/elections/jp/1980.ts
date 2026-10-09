@@ -8,6 +8,12 @@ export const jp1980: Election = {
 	actualSeatAllocation: 'SNTV',
 	totalVotes: 59028836,
 	totalSeats: 511,
+	kEquivalent: {
+		value: 1.205359,
+		status: 'found',
+		partyId: 'jp-ldp',
+		note: 'Representative k within interval [1.187106, 1.223612]'
+	},
 	results: [
 		{
 			partyId: 'jp-ldp',

@@ -8,6 +8,12 @@ export const us2024: Election = {
 	actualSeatAllocation: 'FPTP',
 	totalVotes: 149543421,
 	totalSeats: 435,
+	kEquivalent: {
+		value: null,
+		status: 'target_below_proportional',
+		partyId: 'us-republican',
+		note: 'Vote-leading party has 220 actual seats, below its minimum SV allocation of 222 seats at the proportional limit (k≈0).'
+	},
 	results: [
 		{
 			partyId: 'us-republican',

@@ -8,6 +8,12 @@ export const jp2000: Election = {
 	actualSeatAllocation: 'Parallel',
 	totalVotes: 120727072,
 	totalSeats: 480,
+	kEquivalent: {
+		value: 4.905601,
+		status: 'found',
+		partyId: 'jp-ldp',
+		note: 'Representative k within interval [4.857555, 4.953648]'
+	},
 	results: [
 		{
 			partyId: 'jp-ldp',
