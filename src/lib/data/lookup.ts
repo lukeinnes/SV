@@ -81,7 +81,7 @@ function makeIndependentAggregateRow(
 		partyId: `${election.countryId}-independents-aggregate`,
 
 		usualName: 'Independents',
-		shortName: 'Independents',
+		shortName: 'Ind',
 		codeName: 'IND',
 		colour: '#ffffff',
 		kind: 'independent',

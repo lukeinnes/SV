@@ -156,7 +156,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Genzei Nippon / Yukoku Rengo',
 		englishName: 'Tax Cuts Japan and Yukoku Alliance',
-		shortName: 'Genzei-Yukoku',
+		shortName: 'Genyu',
 		codeName: 'GENYU',
 		colour: '#2E8B57',
 		kind: 'party'
@@ -216,7 +216,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Jiyuto',
 		englishName: 'Liberal Party',
-		shortName: 'Liberal Party',
+		shortName: 'Liberal',
 		codeName: 'LIBERAL',
 		colour: '#F15A24',
 		kind: 'party'
@@ -246,7 +246,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Nihon Shinto',
 		englishName: 'Japan New Party',
-		shortName: 'Japan New Party',
+		shortName: 'Jappan New',
 		codeName: 'JNP',
 		colour: '#4BA3C7',
 		kind: 'party'
@@ -266,7 +266,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Shinto Nippon',
 		englishName: 'New Party Nippon',
-		shortName: 'New Party Nippon',
+		shortName: 'New Nippon',
 		codeName: 'NPN',
 		colour: '#4F46E5',
 		kind: 'party'
@@ -296,7 +296,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Jiyu Rengo',
 		englishName: 'Liberal League',
-		shortName: 'Liberal League',
+		shortName: 'Lib League',
 		codeName: 'LL',
 		colour: '#3AAFA9',
 		kind: 'party'
@@ -316,7 +316,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Hoshu Shinto',
 		englishName: 'New Conservative Party',
-		shortName: 'New Conservative',
+		shortName: 'New Cons',
 		codeName: 'NCP',
 		colour: '#9C6B30',
 		kind: 'party'
@@ -336,7 +336,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Shiji Seito Nashi',
 		englishName: 'Shiji Seitō Nashi',
-		shortName: 'No Party to Support',
+		shortName: 'SSN',
 		codeName: 'SSN',
 		colour: '#666666',
 		kind: 'party'
@@ -346,7 +346,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Mushozoku no Kai',
 		englishName: 'Assembly of Independents',
-		shortName: 'Assembly of Independents',
+		shortName: 'Assembly',
 		codeName: 'AOI',
 		colour: '#6B7280',
 		kind: 'party'
@@ -356,7 +356,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Shinto Kaikaku',
 		englishName: 'New Renaissance Party',
-		shortName: 'New Renaissance',
+		shortName: 'New Ren',
 		codeName: 'NRP',
 		colour: '#7C3AED',
 		kind: 'party'
@@ -406,7 +406,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Minshu Kaikaku Rengo',
 		englishName: 'Democratic Reform Party',
-		shortName: 'Democratic Reform',
+		shortName: 'Dem Reform',
 		codeName: 'DRP',
 		colour: '#5673B8',
 		kind: 'party'
@@ -416,7 +416,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Okinawa Shakai Taishuto',
 		englishName: 'Okinawa Social Mass Party',
-		shortName: 'Okinawa Social Mass',
+		shortName: 'Okinawa SMP',
 		codeName: 'OSMP',
 		colour: '#2F7D6D',
 		kind: 'party'
@@ -426,7 +426,7 @@ export const jpParties: Party[] = [
 		countryId: 'jp',
 		usualName: 'Okinawa Jinminto',
 		englishName: 'Okinawa People\'s Party',
-		shortName: 'Okinawa People\'s',
+		shortName: 'Okinawa PP',
 		codeName: 'OPP',
 		colour: '#B71C1C',
 		kind: 'party'

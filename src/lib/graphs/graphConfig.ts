@@ -143,20 +143,21 @@ export const consolidationMultiplierConfig = {
 
 export const seatBlocksConfig = {
 	svg: {
-		width: 720,
 		plotTop: 46,
 		plotHeight: 320,
 		plotBottom: 62
 	},
 
 	layout: {
-		voteWidth: 72,
-		resultOffset: 170
+		seatBlockToVoteWidthRatio: 1.41,
+		columnGap: 32,
+		minVoteWidth: 72,
+		minSeatBlockWidth: 120
 	},
 
 	grid: {
-		// Match the vote rectangle's height:width ratio.
-		targetSeatAspectRatio: 2.4142135623
+		minCircleRadius: 1.4,
+		circleRadiusRatio: 0.36
 	},
 
 	colours: {

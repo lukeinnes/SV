@@ -16,7 +16,7 @@ export const caParties: Party[] = [
 		countryId: 'ca',
 		usualName: 'Conservative Party of Canada',
 		englishName: 'Conservative Party of Canada',
-		shortName: 'Conservative',
+		shortName: 'Cons',
 		codeName: 'CPC',
 		colour: '#1A4782',
 		kind: 'party'
@@ -56,7 +56,7 @@ export const caParties: Party[] = [
 		countryId: 'ca',
 		usualName: 'People\'s Party of Canada',
 		englishName: 'People\'s Party of Canada',
-		shortName: 'People\'s Party',
+		shortName: 'People\'s',
 		codeName: 'PPC',
 		colour: '#6A2C91',
 		kind: 'party'
@@ -66,7 +66,7 @@ export const caParties: Party[] = [
 		countryId: 'ca',
 		usualName: 'Christian Heritage Party of Canada',
 		englishName: 'Christian Heritage Party of Canada',
-		shortName: 'Christian Heritage',
+		shortName: 'Christian',
 		codeName: 'CHP',
 		colour: '#7A263A',
 		kind: 'party'
@@ -96,7 +96,7 @@ export const caParties: Party[] = [
 		countryId: 'ca',
 		usualName: 'Canadian Alliance',
 		englishName: 'Canadian Alliance',
-		shortName: 'Canadian Alliance',
+		shortName: 'Alliance',
 		codeName: 'CA',
 		colour: '#0066A4',
 		kind: 'party'
@@ -116,7 +116,7 @@ export const caParties: Party[] = [
 		countryId: 'ca',
 		usualName: 'Progressive Conservative Party of Canada',
 		englishName: 'Progressive Conservative Party of Canada',
-		shortName: 'Progressive Conservative',
+		shortName: 'Prog Cons',
 		codeName: 'PC',
 		colour: '#285C9A',
 		kind: 'party'
@@ -196,7 +196,7 @@ export const caParties: Party[] = [
 		countryId: 'ca',
 		usualName: 'Confederation of Regions Party',
 		englishName: 'Confederation of Regions Party',
-		shortName: 'Confederation of Regions',
+		shortName: 'Confederation',
 		codeName: 'COR',
 		colour: '#8A6D3B',
 		kind: 'party'

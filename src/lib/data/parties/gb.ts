@@ -16,7 +16,7 @@ export const gbParties: Party[] = [
 		countryId: 'gb',
 		usualName: 'Conservative Party',
 		englishName: 'Conservative Party',
-		shortName: 'Conservative',
+		shortName: 'Cons',
 		codeName: 'CON',
 		colour: '#0087DC',
 		kind: 'party'
@@ -66,7 +66,7 @@ export const gbParties: Party[] = [
 		countryId: 'gb',
 		usualName: 'Plaid Cymru',
 		englishName: 'Plaid Cymru',
-		shortName: 'Plaid Cymru',
+		shortName: 'Plaid',
 		codeName: 'PC',
 		colour: '#0AA77D',
 		kind: 'party'
@@ -216,7 +216,7 @@ export const gbParties: Party[] = [
 		countryId: 'gb',
 		usualName: 'Scottish Greens',
 		englishName: 'Scottish Greens',
-		shortName: 'Scot Green',
+		shortName: 'Scot Grn',
 		codeName: 'SGRN',
 		colour: '#8DC63F',
 		kind: 'party'
@@ -356,7 +356,7 @@ export const gbParties: Party[] = [
 		countryId: 'gb',
 		usualName: 'Socialist Alliance',
 		englishName: 'Socialist Alliance',
-		shortName: 'Socialist Alliance',
+		shortName: 'Socialist A.',
 		codeName: 'SA',
 		colour: '#FF0000',
 		kind: 'party'
@@ -376,7 +376,7 @@ export const gbParties: Party[] = [
 		countryId: 'gb',
 		usualName: 'Health Concern',
 		englishName: 'Health Concern',
-		shortName: 'Health Concern',
+		shortName: 'Health C',
 		codeName: 'HC',
 		colour: '#FF69B4',
 		kind: 'party'
@@ -406,7 +406,7 @@ export const gbParties: Party[] = [
 		countryId: 'gb',
 		usualName: 'Natural Law Party',
 		englishName: 'Natural Law Party',
-		shortName: 'Natural Law',
+		shortName: 'Nat Law',
 		codeName: 'NLAW',
 		colour: '#FFE4E1',
 		kind: 'party'
@@ -526,7 +526,7 @@ export const gbParties: Party[] = [
 		countryId: 'gb',
 		usualName: 'Independent',
 		englishName: 'Independent',
-		shortName: 'Independent',
+		shortName: 'Ind',
 		codeName: 'IND',
 		colour: '#B9B9B9',
 		kind: 'independent'

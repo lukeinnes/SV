@@ -28,7 +28,7 @@ export const nlParties: Party[] = [
 		englishName: 'People\'s Party for Freedom and Democracy',
 		shortName: 'VVD',
 		codeName: 'VVD',
-		colour: '#21468B',
+		colour: '#0328CB',
 		kind: 'party'
 	},
 	{
