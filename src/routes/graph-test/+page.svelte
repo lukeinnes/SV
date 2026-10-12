@@ -1,4 +1,6 @@
 <script lang="ts">
+	import ElectionTransformationGraph from '$lib/components/elections/ElectionTransformationGraph.svelte';
+	import ElectionWorkings from '$lib/components/elections/ElectionWorkings.svelte';
 	import ConsolidationMultiplier from '$lib/components/graphs/ConsolidationMultiplier.svelte';
 	import MandateCurve from '$lib/components/graphs/MandateCurve.svelte';
 	import MandatePerVote from '$lib/components/graphs/MandatePerVote.svelte';
@@ -7,6 +9,7 @@
 	import { countryDatasets, type CountryDataset } from '$lib/data/registry';
 	import type { Election } from '$lib/data/types';
 	import { enrichElectionResults } from '$lib/data/lookup';
+	import { seatBlocksConfig } from '$lib/graphs/graphConfig';
 	import { calculateRealElection, type RealElectionCalculation } from '$lib/sv/calculateRealElection';
 	import { LAMBDA } from '$lib/sv/constants';
 	import { calculateA } from '$lib/sv/parameters';
@@ -30,17 +33,10 @@
 		colour: string;
 	};
 
-	let k = $state(LAMBDA);
-	let testMode = $state<TestMode>('real');
-
-	const initialDataset = countryDatasets[0];
-	const initialElection =
-		initialDataset?.elections[initialDataset.elections.length - 1] ?? initialDataset?.elections[0];
-
-	let selectedCountryId = $state(initialDataset?.country.id ?? '');
-	let selectedElectionId = $state(initialElection?.id ?? '');
-
-	let syntheticSeats = $state(100);
+	type LegendGroupingThresholds = {
+		actual: number;
+		sv: number;
+	};
 
 	const minK = 0.01;
 	const maxK = 12;
@@ -49,6 +45,12 @@
 	const minSeats = 50;
 	const maxSeats = 1000;
 	const seatStep = 1;
+
+	const legendMinimumRowHeight = 22;
+	const legendMaximumRows = Math.max(
+		1,
+		Math.floor(seatBlocksConfig.svg.plotHeight / legendMinimumRowHeight)
+	);
 
 	const sampleParties: SampleParty[] = [
 		{
@@ -85,6 +87,18 @@
 		}
 	];
 
+	const initialDataset = countryDatasets[0];
+
+	let k = $state(LAMBDA);
+	let testMode = $state<TestMode>('real');
+	let syntheticSeats = $state(100);
+	let useEnglishNames = $state(false);
+	let stickyTableTop = $state(0);
+
+	let selectedCountryId = $state(initialDataset?.country.id ?? '');
+	let selectedElectionId = $state(initialDataset ? getDefaultElectionId(initialDataset) : '');
+	let previousCountryId = $state(selectedCountryId);
+
 	let selectedDataset = $derived(
 		countryDatasets.find((dataset) => dataset.country.id === selectedCountryId) ?? countryDatasets[0]
 	);
@@ -99,6 +113,12 @@
 	$effect(() => {
 		if (!selectedDataset) return;
 
+		if (selectedCountryId !== previousCountryId) {
+			selectedElectionId = getDefaultElectionId(selectedDataset);
+			previousCountryId = selectedCountryId;
+			return;
+		}
+
 		const selectedElectionStillExists = selectedDataset.elections.some(
 			(election) => election.id === selectedElectionId
 		);
@@ -111,20 +131,61 @@
 	let a = $derived(calculateA(k));
 	let baselineTotalMandate = $derived(a * k);
 
+	function getElectionYear(election: Election): number {
+		const text = `${election.id} ${election.briefName} ${election.fullName}`;
+		const matches = [...text.matchAll(/\b(?:18|19|20|21)\d{2}\b/g)].map((match) =>
+			Number(match[0])
+		);
+
+		if (matches.length === 0) {
+			return Number.NEGATIVE_INFINITY;
+		}
+
+		return Math.max(...matches);
+	}
+
 	function getDefaultElectionId(dataset: CountryDataset): string {
-		return dataset.elections[dataset.elections.length - 1]?.id ?? dataset.elections[0]?.id ?? '';
+		const latest = dataset.elections
+			.map((election, index) => ({
+				election,
+				index,
+				year: getElectionYear(election)
+			}))
+			.sort((left, right) => right.year - left.year || right.index - left.index)[0];
+
+		return latest?.election.id ?? '';
 	}
 
 	function handleCountryChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement;
-		const nextCountryId = target.value;
-		const nextDataset = countryDatasets.find((dataset) => dataset.country.id === nextCountryId);
+		selectedCountryId = target.value;
+	}
 
-		selectedCountryId = nextCountryId;
+	function measureStickyControls(node: HTMLElement) {
+		function updateOffset() {
+			const rect = node.getBoundingClientRect();
+			const computedTop = Number.parseFloat(getComputedStyle(node).top);
+			const stickyTop = Number.isFinite(computedTop) ? computedTop : 0;
 
-		if (nextDataset) {
-			selectedElectionId = getDefaultElectionId(nextDataset);
+			stickyTableTop = Math.max(0, Math.ceil(stickyTop + rect.height - 1));
 		}
+
+		updateOffset();
+
+		if (typeof ResizeObserver === 'undefined') {
+			return {
+				destroy() {}
+			};
+		}
+
+		const observer = new ResizeObserver(updateOffset);
+		observer.observe(node);
+
+		return {
+			destroy() {
+				observer.disconnect();
+			}
+		};
 	}
 
 	function mandate(x: number): number {
@@ -197,6 +258,77 @@
 		return colour.toLowerCase() === '#ffffff' ? '#94a3b8' : colour;
 	}
 
+	function calculateLegendGroupingThresholdFromSeatCounts(seatCounts: number[]): number {
+		const rows = seatCounts.filter((seatCount) => seatCount > 0);
+
+		if (rows.length <= legendMaximumRows) {
+			return 0;
+		}
+
+		const maximumSeatCount = rows.reduce((maximum, seatCount) => Math.max(maximum, seatCount), 0);
+
+		for (let threshold = 1; threshold <= maximumSeatCount; threshold += 1) {
+			const groupedCount = rows.filter((seatCount) => seatCount <= threshold).length;
+
+			if (groupedCount < 2) {
+				continue;
+			}
+
+			const visibleRowCount = rows.length - groupedCount + 1;
+
+			if (visibleRowCount <= legendMaximumRows) {
+				return threshold;
+			}
+		}
+
+		return maximumSeatCount;
+	}
+
+	function calculateDisplayedActualGroupingThreshold(
+		election: Election,
+		dataset: CountryDataset
+	): number {
+		const displayedRows = enrichElectionResults(election, dataset.parties);
+
+		return calculateLegendGroupingThresholdFromSeatCounts(
+			displayedRows.map((row) => Math.max(0, Math.round(row.seatsWon)))
+		);
+	}
+
+	function calculateDisplayedSvGroupingThresholdAcrossK(
+		election: Election,
+		dataset: CountryDataset
+	): number {
+		const displayedRows = enrichElectionResults(election, dataset.parties);
+		const scanSteps = Math.round((maxK - minK) / kStep);
+
+		let maximumThreshold = 0;
+
+		for (let step = 0; step <= scanSteps; step += 1) {
+			const scanK = Number((minK + step * kStep).toFixed(2));
+
+			try {
+				const calculation = calculateRealElection(election, dataset.parties, scanK);
+				const calculationByPartyId = new Map(
+					calculation.parties.map((party) => [party.partyId, party])
+				);
+
+				const threshold = calculateLegendGroupingThresholdFromSeatCounts(
+					displayedRows.map((row) => {
+						const calculatedParty = calculationByPartyId.get(row.partyId);
+						return Math.max(0, Math.round(calculatedParty?.svSeats ?? 0));
+					})
+				);
+
+				maximumThreshold = Math.max(maximumThreshold, threshold);
+			} catch {
+				// Ignore invalid scan points. The live calculation will still surface real errors.
+			}
+		}
+
+		return maximumThreshold;
+	}
+
 	function makeRealSeatBlockParties(
 		election: Election,
 		dataset: CountryDataset,
@@ -257,6 +389,18 @@
 			: undefined
 	);
 
+	let realLegendGroupingThresholds = $derived(
+		selectedDataset && selectedElection
+			? {
+					actual: calculateDisplayedActualGroupingThreshold(selectedElection, selectedDataset),
+					sv: calculateDisplayedSvGroupingThresholdAcrossK(selectedElection, selectedDataset)
+				}
+			: {
+					actual: 0,
+					sv: 0
+				}
+	);
+
 	let realSeatBlockParties = $derived(
 		selectedDataset && selectedElection && realCalculation
 			? makeRealSeatBlockParties(selectedElection, selectedDataset, realCalculation)
@@ -277,6 +421,15 @@
 
 	let activeConsolidationIndex = $derived(
 		(100 * (activeTotalMandate - baselineTotalMandate)) / (2000 - baselineTotalMandate)
+	);
+
+	let activeLegendGroupingThresholds: LegendGroupingThresholds = $derived(
+		testMode === 'real'
+			? realLegendGroupingThresholds
+			: {
+					actual: 0,
+					sv: 0
+				}
 	);
 
 	let syntheticMusclePoints = $derived(
@@ -340,7 +493,7 @@
 		</p>
 	</section>
 
-	<section class="controls">
+	<section class="controls" use:measureStickyControls>
 		<div class="selector-block">
 			<label for="test-mode">Test case</label>
 			<select id="test-mode" bind:value={testMode}>
@@ -403,6 +556,11 @@
 
 		<button type="button" onclick={() => (k = LAMBDA)}>Reset to Λ</button>
 
+		<label class="toggle-control">
+			<input type="checkbox" bind:checked={useEnglishNames} disabled={testMode === 'synthetic'} />
+			<span>English names</span>
+		</label>
+
 		<div class="slider-row">
 			<label for="k-slider">k</label>
 			<input
@@ -437,7 +595,22 @@
 			<h2>Vote share and seat blocks</h2>
 		</div>
 
-		<SeatBlocks parties={activeSeatBlockParties} totalSeats={activeTotalSeats} />
+		<SeatBlocks
+			parties={activeSeatBlockParties}
+			totalSeats={activeTotalSeats}
+			actualLegendGroupingThreshold={activeLegendGroupingThresholds.actual}
+			svLegendGroupingThreshold={activeLegendGroupingThresholds.sv}
+		/>
+
+		{#if testMode === 'real' && realCalculation}
+			<ElectionWorkings
+				calculation={realCalculation}
+				useEnglishNames={useEnglishNames}
+				stickyTop={stickyTableTop}
+			/>
+
+			<ElectionTransformationGraph calculation={realCalculation} useEnglishNames={useEnglishNames} />
+		{/if}
 	</section>
 
 	<section class="graph-section">
@@ -478,11 +651,11 @@
 </main>
 
 <style>
-    main {
-        max-width: min(1440px, calc(100vw - 48px));
-        margin: 0 auto;
-        padding: 32px 20px 64px;
-    }
+	main {
+		max-width: var(--page-max-width, min(1440px, calc(100vw - 48px)));
+		margin: 0 auto;
+		padding: 32px 20px 64px;
+	}
 
 	.hero {
 		margin-bottom: 20px;
@@ -580,6 +753,21 @@
 		border-color: #93c5fd;
 		background: #eff6ff;
 		color: #1d4ed8;
+	}
+
+	.toggle-control {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		width: fit-content;
+		color: #475569;
+		font-weight: 900;
+		cursor: pointer;
+	}
+
+	.toggle-control input {
+		width: 16px;
+		height: 16px;
 	}
 
 	.slider-row {

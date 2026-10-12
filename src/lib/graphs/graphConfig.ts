@@ -167,3 +167,12 @@ export const seatBlocksConfig = {
 		title: '#0f172a'
 	}
 } as const;
+
+export const electionTransformationConfig = {
+	layout: {
+		// Share of the available horizontal space given to the centre dumbbell plot.
+		// The remaining space is split equally between the two donut charts.
+		// 0.4 means: 30% vote donut, 40% dumbbell, 30% seat donut.
+		dumbbellColumnFraction: 0.381953
+	}
+} as const;

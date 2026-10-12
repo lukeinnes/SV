@@ -69,9 +69,16 @@
 	type Props = {
 		parties: SeatBlocksParty[];
 		totalSeats: number;
+		actualLegendGroupingThreshold?: number;
+		svLegendGroupingThreshold?: number;
 	};
 
-	let { parties, totalSeats }: Props = $props();
+	let {
+		parties,
+		totalSeats,
+		actualLegendGroupingThreshold,
+		svLegendGroupingThreshold
+	}: Props = $props();
 
 	const plotTop = seatBlocksConfig.svg.plotTop;
 	const plotHeight = seatBlocksConfig.svg.plotHeight;
@@ -88,10 +95,8 @@
 
 	const majorityLineOverhang = 7;
 
-	// One-line vote labels fit comfortably at this height.
 	const minimumVoteLabelHeight = 18;
 
-	// Keep the side legends compact. If too many parties win seats, small seat-winners are grouped.
 	const minimumLegendRowHeight = 22;
 	const maxLegendRows = Math.max(1, Math.floor(plotHeight / minimumLegendRowHeight));
 	const groupedLegendColour = '#94a3b8';
@@ -412,6 +417,20 @@
 		return [title, ...lines].join('\n');
 	}
 
+	function getLegendGroupingThreshold(
+		seatKey: 'actualSeats' | 'svSeats',
+		rows: LegendRow[]
+	): number {
+		const suppliedThreshold =
+			seatKey === 'actualSeats' ? actualLegendGroupingThreshold : svLegendGroupingThreshold;
+
+		if (typeof suppliedThreshold === 'number' && Number.isFinite(suppliedThreshold)) {
+			return Math.max(0, Math.floor(suppliedThreshold));
+		}
+
+		return chooseLegendGroupingThreshold(rows);
+	}
+
 	function makeLegendRows(seatKey: 'actualSeats' | 'svSeats'): LegendRow[] {
 		const rows: LegendRow[] = [...parties]
 			.reverse()
@@ -431,7 +450,7 @@
 			})
 			.filter((row) => row.seatCount > 0);
 
-		const threshold = chooseLegendGroupingThreshold(rows);
+		const threshold = getLegendGroupingThreshold(seatKey, rows);
 
 		if (threshold <= 0) {
 			return rows;
