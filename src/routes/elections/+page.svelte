@@ -1,9 +1,27 @@
 <script lang="ts">
-	import type { CountryDataset } from '$lib/data/registry';
-	import { countryDatasets, getCountryDataset } from '$lib/data/registry';
-	import { calculateTau, enrichElectionResults } from '$lib/data/lookup';
+	import { get } from 'svelte/store';
+	import ElectionTransformationGraph from '$lib/components/elections/ElectionTransformationGraph.svelte';
+	import ElectionWorkings from '$lib/components/elections/ElectionWorkings.svelte';
+	import PageControls from '$lib/components/layout/PageControls.svelte';
+	import SvControlPanel from '$lib/components/layout/SvControlPanel.svelte';
+	import SeatBlocks, { type SeatBlocksParty } from '$lib/components/graphs/SeatBlocks.svelte';
+	import {
+		countryDatasets,
+		getCountryDataset,
+		type CountryDataset
+	} from '$lib/data/registry';
+	import type { Election } from '$lib/data/types';
 	import { LAMBDA } from '$lib/sv/constants';
-	import { calculateRealElection } from '$lib/sv/calculateRealElection';
+	import {
+		calculateRealElection,
+		type RealElectionCalculation
+	} from '$lib/sv/calculateRealElection';
+	import {
+		controlBarState,
+		DEFAULT_COUNTRY_ID
+	} from '$lib/state/controlBarState';
+
+	type CalculatedParty = RealElectionCalculation['parties'][number];
 
 	function firstDataset(): CountryDataset {
 		const dataset = countryDatasets[0];
@@ -15,385 +33,536 @@
 		return dataset;
 	}
 
-	function firstElection(dataset: CountryDataset) {
+	function firstElection(dataset: CountryDataset): Election {
 		const election = dataset.elections[0];
 
 		if (!election) {
-			throw new Error(`Dataset ${dataset.country.id} has no elections.`);
+			throw new Error(
+				`Dataset ${dataset.country.id} has no elections.`
+			);
 		}
 
 		return election;
 	}
 
-	function selectedOrFirstElection(dataset: CountryDataset, electionId: string) {
-		return dataset.elections.find((election) => election.id === electionId) ?? firstElection(dataset);
+	function electionSortValue(election: Election): number {
+		const possibleValues = [
+			election.year,
+			election.date,
+			election.id,
+			election.briefName,
+			election.fullName
+		];
+
+		for (const value of possibleValues) {
+			if (value === undefined || value === null) continue;
+
+			const match = String(value).match(/\d{4}/);
+
+			if (match) return Number(match[0]);
+		}
+
+		return 0;
 	}
 
-	const initialDataset = firstDataset();
+	function getDefaultElectionId(dataset: CountryDataset): string {
+		const election = [...dataset.elections].sort(
+			(left, right) =>
+				electionSortValue(right) - electionSortValue(left)
+		)[0];
 
-	let selectedCountryId = $state(initialDataset.country.id);
-	let selectedElectionId = $state(firstElection(initialDataset).id);
-	let k = $state(LAMBDA);
+		return election?.id ?? firstElection(dataset).id;
+	}
 
-	let selectedDataset = $derived(getCountryDataset(selectedCountryId));
+	function datasetOrDefault(countryId: string): CountryDataset {
+		try {
+			if (countryId) return getCountryDataset(countryId);
+		} catch {
+			// Fall through to default.
+		}
 
-	let selectedElection = $derived(selectedOrFirstElection(selectedDataset, selectedElectionId));
+		try {
+			return getCountryDataset(DEFAULT_COUNTRY_ID);
+		} catch {
+			return firstDataset();
+		}
+	}
 
-	let enrichedResults = $derived(enrichElectionResults(selectedElection, selectedDataset.parties));
+	function selectedOrDefaultElection(
+		dataset: CountryDataset,
+		electionId: string
+	): Election {
+		return (
+			dataset.elections.find(
+				(election) => election.id === electionId
+			) ?? firstElection(dataset)
+		);
+	}
 
-	let tau = $derived(calculateTau(selectedElection.totalVotes, selectedElection.totalSeats));
+	function countryFlag(countryId: string): string {
+		const flags: Record<string, string> = {
+			gb: '🇬🇧',
+			jp: '🇯🇵',
+			fi: '🇫🇮',
+			us: '🇺🇸',
+			nl: '🇳🇱',
+			ca: '🇨🇦',
+			pl: '🇵🇱',
+			lt: '🇱🇹'
+		};
 
-	let calculation = $derived(calculateRealElection(selectedElection, selectedDataset.parties, k));
+		return flags[countryId] ?? '🏳️';
+	}
 
-	let calculationByPartyId = $derived(
-		new Map(calculation.parties.map((party) => [party.partyId, party]))
+	function electionDisplayName(election: Election): string {
+		return (
+			election.briefName ??
+			election.fullName ??
+			election.id
+		);
+	}
+
+	function formatInteger(value: number): string {
+		return Math.round(value).toLocaleString();
+	}
+
+	function formatNumber(value: number): string {
+		return value.toLocaleString(undefined, {
+			maximumFractionDigits: 2
+		});
+	}
+
+	function calculateConsolidationIndex(
+		totalMandate: number,
+		A: number,
+		kValue: number
+	): number {
+		const minimumMandate = A * kValue;
+		const benchmarkMandate = 2000;
+		const denominator = benchmarkMandate - minimumMandate;
+
+		if (Math.abs(denominator) < 1e-12) return 0;
+
+		return (
+			(100 * (totalMandate - minimumMandate)) /
+			denominator
+		);
+	}
+
+	const initialControlState = get(controlBarState);
+	const initialDataset = datasetOrDefault(
+		initialControlState.countryId
 	);
 
+	const initialElectionId =
+		initialControlState.electionId &&
+		initialDataset.elections.some(
+			(election) =>
+				election.id === initialControlState.electionId
+		)
+			? initialControlState.electionId
+			: getDefaultElectionId(initialDataset);
+
+	let selectedCountryId = $state(initialDataset.country.id);
+	let selectedElectionId = $state(initialElectionId);
+	let previousCountryId = $state(selectedCountryId);
+
+	let k = $state(
+		Number.isFinite(initialControlState.k)
+			? initialControlState.k
+			: LAMBDA
+	);
+
+	let useEnglishNames = $state(
+		initialControlState.useEnglishNames ?? false
+	);
+
+	let selectedDataset = $derived(
+		getCountryDataset(selectedCountryId)
+	);
+
+	let selectedElection = $derived(
+		selectedOrDefaultElection(
+			selectedDataset,
+			selectedElectionId
+		)
+	);
+
+	let orderedElections = $derived(
+		[...selectedDataset.elections].sort(
+			(left, right) =>
+				electionSortValue(right) - electionSortValue(left)
+		)
+	);
+
+	let calculation = $derived(
+		calculateRealElection(
+			selectedElection,
+			selectedDataset.parties,
+			k
+		)
+	);
+
+	let consolidationIndex = $derived(
+		calculateConsolidationIndex(
+			calculation.totalMandate,
+			calculation.A,
+			k
+		)
+	);
+
+	function displayPartyName(party: CalculatedParty): string {
+		if (useEnglishNames && party.englishName?.trim()) {
+			return party.englishName;
+		}
+
+		return party.usualName;
+	}
+
+	function makeSeatBlocksParties(): SeatBlocksParty[] {
+		return calculation.parties.map((party) => ({
+			id: party.partyId,
+			label: displayPartyName(party),
+			shortLabel: party.shortName,
+			colour: party.colour,
+			voteShare: party.voteShare,
+			actualSeats: party.actualSeats,
+			svSeats: party.svSeats
+		}));
+	}
+
+	function makeMusclePoints() {
+		return calculation.parties
+			.filter(
+				(party) =>
+					party.eligible &&
+					party.fractionOfPower > 0
+			)
+			.map((party) => ({
+				id: party.partyId,
+				x: party.x,
+				fractionOfPower: party.fractionOfPower,
+				colour: party.colour
+			}));
+	}
+
+	let seatBlocksParties = $derived(makeSeatBlocksParties());
+	let musclePoints = $derived(makeMusclePoints());
+
 	$effect(() => {
-		if (!selectedDataset.elections.some((election) => election.id === selectedElectionId)) {
-			selectedElectionId = firstElection(selectedDataset).id;
+		if (selectedCountryId !== previousCountryId) {
+			previousCountryId = selectedCountryId;
+			selectedElectionId =
+				getDefaultElectionId(selectedDataset);
+			return;
+		}
+
+		if (
+			!selectedDataset.elections.some(
+				(election) =>
+					election.id === selectedElectionId
+			)
+		) {
+			selectedElectionId =
+				getDefaultElectionId(selectedDataset);
 		}
 	});
 
-	function num(value: number): string {
-		return value.toLocaleString(undefined, {
-			maximumFractionDigits: 4
+	$effect(() => {
+		controlBarState.set({
+			countryId: selectedCountryId,
+			electionId: selectedElectionId,
+			k,
+			seats: selectedElection.totalSeats,
+			useEnglishNames
 		});
-	}
-
-	function whole(value: number): string {
-		return value.toLocaleString(undefined, {
-			maximumFractionDigits: 0
-		});
-	}
-
-	function pct(value: number): string {
-		return `${(value * 100).toFixed(2)}%`;
-	}
-
-	function signed(value: number): string {
-		if (value > 0) return `+${value}`;
-		return String(value);
-	}
-
-	function thresholdBadgeText(result: {
-		isOther: boolean;
-		isIndependentAggregate: boolean;
-		aboveTau: boolean;
-	}): string {
-		if (result.isOther) return 'Other';
-		if (result.isIndependentAggregate) return 'Grouped';
-		if (result.aboveTau) return 'Yes';
-		return 'No';
-	}
-
-	function thresholdBadgeClass(result: {
-		isOther: boolean;
-		isIndependentAggregate: boolean;
-		aboveTau: boolean;
-	}): string {
-		if (result.isOther || result.isIndependentAggregate) return 'muted';
-		if (result.aboveTau) return 'yes';
-		return 'no';
-	}
+	});
 </script>
 
 <svelte:head>
-	<title>Election Browser — Strengthened Voting</title>
+	<title>Elections — Strengthened Voting</title>
 </svelte:head>
 
-<main>
-	<header class="hero">
-		<p class="eyebrow">Strengthened Voting data browser</p>
-		<h1>Election data</h1>
-		<p class="lede">
-			Browse imported election results, compare actual seats with SV seats, and inspect which
-			parties receive mandate under the current value of k.
-		</p>
-	</header>
+<main class="elections-page">
+	<PageControls ariaLabel="Election controls">
+		<SvControlPanel
+			bind:k
+			bind:useEnglishNames
+			showEnglishToggle
+			currentTotalMandate={calculation.totalMandate}
+			musclePoints={musclePoints}
+			electionVotes={selectedElection.totalVotes}
+			electionSeats={selectedElection.totalSeats}
+		>
+			{#snippet selectors()}
+				<div class="sv-selector-row">
+					<label for="country-select">Country</label>
+					<select
+						id="country-select"
+						bind:value={selectedCountryId}
+					>
+						{#each countryDatasets as dataset (dataset.country.id)}
+							<option value={dataset.country.id}>
+								{countryFlag(dataset.country.id)}
+								{dataset.country.name}
+							</option>
+						{/each}
+					</select>
+				</div>
 
-	<section class="controls" aria-label="Election controls">
-		<div class="control">
-			<label for="country-select">Country</label>
+				<div class="sv-selector-row">
+					<label for="election-select">Election</label>
+					<select
+						id="election-select"
+						bind:value={selectedElectionId}
+					>
+						{#each orderedElections as election (election.id)}
+							<option value={election.id}>
+								{electionDisplayName(election)}
+							</option>
+						{/each}
+					</select>
+				</div>
+			{/snippet}
+		</SvControlPanel>
+	</PageControls>
 
-			<select id="country-select" bind:value={selectedCountryId}>
-				{#each countryDatasets as dataset (dataset.country.id)}
-					<option value={dataset.country.id}>{dataset.country.name}</option>
-				{/each}
-			</select>
-		</div>
-
-		<div class="control">
-			<label for="election-select">Election</label>
-
-			<select id="election-select" bind:value={selectedElectionId}>
-				{#each selectedDataset.elections as election (election.id)}
-					<option value={election.id}>{election.briefName}</option>
-				{/each}
-			</select>
-		</div>
-	</section>
-
-	<section class="panel">
-		<div class="slider-header">
-			<label for="k-slider">
-				<span>Mandate parameter k</span>
-				<strong>{Number(k).toFixed(4)}</strong>
-			</label>
-
-			<button type="button" onclick={() => (k = LAMBDA)}>Reset to Λ</button>
-		</div>
-
-		<input id="k-slider" type="range" min="0.5" max="10" step="0.01" bind:value={k} />
-
-		<div class="summary">
-			<div class="summary-card wide">
-				<span>Election</span>
-				<strong>{selectedElection.fullName}</strong>
+	<section class="summary-panel">
+		<div class="summary-heading">
+			<div>
+				<p class="eyebrow">Election browser</p>
+				<h1>{selectedElection.fullName}</h1>
 			</div>
 
+			<div class="summary-country">
+				<span>
+					{countryFlag(selectedDataset.country.id)}
+				</span>
+				<strong>
+					{selectedDataset.country.name}
+				</strong>
+			</div>
+		</div>
+
+		<div class="summary-grid">
 			<div class="summary-card wide">
 				<span>Actual allocation</span>
-				<strong>{selectedElection.actualSeatAllocation ?? 'Not recorded'}</strong>
+				<strong>
+					{selectedElection.actualSeatAllocation ??
+						'Not recorded'}
+				</strong>
 			</div>
 
 			<div class="summary-card">
 				<span>Total votes</span>
-				<strong>{whole(selectedElection.totalVotes)}</strong>
+				<strong>
+					{formatInteger(selectedElection.totalVotes)}
+				</strong>
 			</div>
 
 			<div class="summary-card">
 				<span>Total seats</span>
-				<strong>{whole(selectedElection.totalSeats)}</strong>
+				<strong>
+					{formatInteger(selectedElection.totalSeats)}
+				</strong>
 			</div>
 
 			<div class="summary-card">
 				<span>τ</span>
-				<strong>{num(tau)}</strong>
+				<strong>
+					{formatNumber(calculation.tau)}
+				</strong>
 			</div>
 
 			<div class="summary-card">
 				<span>A</span>
-				<strong>{num(calculation.A)}</strong>
+				<strong>
+					{formatNumber(calculation.A)}
+				</strong>
 			</div>
 
 			<div class="summary-card">
 				<span>Eligible votes</span>
-				<strong>{whole(calculation.eligibleVoteTotal)}</strong>
+				<strong>
+					{formatInteger(calculation.eligibleVoteTotal)}
+				</strong>
 			</div>
 
 			<div class="summary-card">
 				<span>Total mandate</span>
-				<strong>{num(calculation.totalMandate)}</strong>
+				<strong>
+					{formatNumber(calculation.totalMandate)}
+				</strong>
+			</div>
+
+			<div class="summary-card">
+				<span>Consolidation Index</span>
+				<strong>
+					{formatNumber(consolidationIndex)}
+				</strong>
+			</div>
+
+			<div class="summary-card">
+				<span>k</span>
+				<strong>{k.toFixed(2)}</strong>
 			</div>
 		</div>
 	</section>
 
-	<section class="table-section">
+	<section class="graph-panel">
 		<div class="section-heading">
 			<div>
-				<h2>Actual result vs SV result</h2>
+				<h2>
+					Actual seats, votes, and SV seats
+				</h2>
 				<p>
-					Rows are displayed using the election-browser rules. Parties are shown separately if they
-					exceed τ or won seats. Below-threshold zero-seat rows are folded into Other. Only rows
-					with <code>kind: 'party'</code> and votes above τ receive mandate.
+					The left block shows actual seats, the centre
+					bar shows vote share, and the right block
+					shows seats after applying Strengthened Voting.
 				</p>
 			</div>
 		</div>
 
-		<div class="table-wrap">
-			<table>
-				<thead>
-					<tr>
-						<th>Colour</th>
-						<th>Party</th>
-						<th>Code</th>
-						<th>Kind</th>
-						<th>Votes</th>
-						<th>Vote share</th>
-						<th>Actual seats</th>
-						<th>SV seats</th>
-						<th>Δ seats</th>
-						<th>Actual seat share</th>
-						<th>SV seat share</th>
-						<th>Mandate</th>
-						<th>Power share</th>
-						<th>Above τ?</th>
-					</tr>
-				</thead>
+		<SeatBlocks
+			parties={seatBlocksParties}
+			totalSeats={selectedElection.totalSeats}
+			actualLegendGroupingThreshold={0.025}
+			svLegendGroupingThreshold={0.025}
+		/>
+	</section>
 
-				<tbody>
-					{#each enrichedResults as result (result.partyId)}
-						{@const calculationRow = calculationByPartyId.get(result.partyId)}
-						{@const svSeats = calculationRow?.svSeats ?? 0}
-						{@const seatDelta = svSeats - result.seatsWon}
-						{@const svSeatShare = svSeats / selectedElection.totalSeats}
-						{@const mandate = calculationRow?.mandate ?? 0}
-						{@const fractionOfPower = calculationRow?.fractionOfPower ?? 0}
-
-						<tr>
-							<td>
-								<span
-									class="swatch"
-									style={`background: ${result.colour}`}
-									aria-label={`${result.shortName} colour`}
-								></span>
-							</td>
-
-							<td>
-								<div class="party-name">{result.shortName}</div>
-								<div class="party-usual">{result.usualName}</div>
-							</td>
-
-							<td>{result.codeName}</td>
-							<td>{result.kind}</td>
-							<td>{whole(result.votes)}</td>
-							<td>{pct(result.voteShare)}</td>
-							<td>{whole(result.seatsWon)}</td>
-							<td>{whole(svSeats)}</td>
-
-							<td class:positive={seatDelta > 0} class:negative={seatDelta < 0}>
-								{signed(seatDelta)}
-							</td>
-
-							<td>{pct(result.seatShare)}</td>
-							<td>{pct(svSeatShare)}</td>
-							<td>{num(mandate)}</td>
-							<td>{pct(fractionOfPower)}</td>
-
-							<td>
-								<span class={`badge ${thresholdBadgeClass(result)}`}>
-									{thresholdBadgeText(result)}
-								</span>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
+	<section class="graph-panel">
+		<div class="section-heading">
+			<div>
+				<h2>Election transformation</h2>
+				<p>
+					This view compares vote share with the
+					final SV share of seats for parties
+					receiving mandate.
+				</p>
+			</div>
 		</div>
+
+		<ElectionTransformationGraph
+			{calculation}
+			{useEnglishNames}
+		/>
+	</section>
+
+	<section class="workings-panel">
+		<div class="section-heading">
+			<div>
+				<h2>SV workings</h2>
+				<p>
+					Rows below τ receive zero mandate.
+					Other, independent, and special rows
+					are excluded from mandate allocation.
+				</p>
+			</div>
+		</div>
+
+		<ElectionWorkings
+			{calculation}
+			{useEnglishNames}
+			stickyTop={0}
+		/>
 	</section>
 </main>
 
 <style>
-	main {
-		max-width: 1320px;
-		margin: 0 auto;
-		padding: 32px 20px 56px;
-	}
-
-	.hero {
-		margin-bottom: 28px;
-	}
-
-	.eyebrow {
-		margin: 0 0 8px;
-		color: #2563eb;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		font-size: 0.8rem;
-	}
-
-	h1 {
-		margin: 0;
-		font-size: clamp(2.25rem, 6vw, 4.5rem);
-		line-height: 1;
-		letter-spacing: -0.05em;
-	}
-
-	.lede {
-		max-width: 820px;
-		margin: 16px 0 0;
-		color: #475569;
-		font-size: 1.1rem;
-		line-height: 1.55;
-	}
-
-	.controls {
+	.elections-page {
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 16px;
-		margin-bottom: 18px;
+		gap: 22px;
 	}
 
-	.control {
-		display: grid;
-		gap: 8px;
+	.elections-page > :global(section:not(.page-controls)) {
+		width: var(--page-width);
+		margin-inline: auto;
 	}
 
-	label {
-		font-weight: 700;
-		color: #334155;
-	}
-
-	select {
-		width: 100%;
-		border: 1px solid #cbd5e1;
-		border-radius: 14px;
-		background: white;
-		color: #0f172a;
-		padding: 12px 14px;
-		font: inherit;
-	}
-
-	.panel,
-	.table-section {
-		margin-bottom: 20px;
+	.summary-panel,
+	.graph-panel,
+	.workings-panel {
 		border: 1px solid #cbd5e1;
 		border-radius: 22px;
-		background: white;
+		background: #ffffff;
 		box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
 	}
 
-	.panel {
+	.summary-panel {
 		padding: 22px;
 	}
 
-	.slider-header {
+	.summary-heading {
 		display: flex;
-		align-items: center;
+		gap: 20px;
+		align-items: flex-start;
 		justify-content: space-between;
-		gap: 16px;
-		margin-bottom: 12px;
+		margin-bottom: 20px;
 	}
 
-	.slider-header label {
-		display: grid;
-		gap: 4px;
+	.eyebrow {
+		margin: 0 0 7px;
+		color: var(--brand-blue);
+		font-size: 0.78rem;
+		font-weight: 950;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 	}
 
-	.slider-header strong {
+	h1,
+	h2 {
+		margin: 0;
 		color: #0f172a;
-		font-size: 1.4rem;
 	}
 
-	button {
-		border: 1px solid #cbd5e1;
+	h1 {
+		font-size: clamp(1.8rem, 4vw, 3.3rem);
+		line-height: 1.02;
+		letter-spacing: -0.055em;
+	}
+
+	h2 {
+		font-size: 1.35rem;
+		letter-spacing: -0.025em;
+	}
+
+	p {
+		margin: 8px 0 0;
+		color: #64748b;
+		line-height: 1.5;
+	}
+
+	.summary-country {
+		display: inline-flex;
+		gap: 9px;
+		align-items: center;
+		border: 1px solid #e2e8f0;
 		border-radius: 999px;
 		background: #f8fafc;
-		color: #0f172a;
-		padding: 9px 14px;
-		font: inherit;
-		font-weight: 700;
-		cursor: pointer;
+		padding: 9px 13px;
+		color: #334155;
+		font-weight: 950;
+		white-space: nowrap;
 	}
 
-	input[type='range'] {
-		width: 100%;
+	.summary-country span {
+		font-size: 1.25rem;
 	}
 
-	.summary {
+	.summary-grid {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 14px;
-		margin-top: 20px;
+		grid-template-columns:
+			repeat(4, minmax(0, 1fr));
+		gap: 12px;
 	}
 
 	.summary-card {
 		border: 1px solid #e2e8f0;
 		border-radius: 16px;
 		background: #f8fafc;
-		padding: 14px;
+		padding: 13px;
+		min-width: 0;
 	}
 
 	.summary-card.wide {
@@ -403,145 +572,55 @@
 	.summary-card span {
 		display: block;
 		color: #64748b;
-		font-size: 0.85rem;
-		font-weight: 700;
+		font-size: 0.78rem;
+		font-weight: 900;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
 	}
 
 	.summary-card strong {
 		display: block;
 		margin-top: 5px;
-		font-size: 1.05rem;
+		color: #0f172a;
+		font-size: 1.08rem;
 		line-height: 1.25;
 	}
 
-	.table-section {
+	.section-heading {
+		padding: 22px 22px 0;
+	}
+
+	.graph-panel :global(svg) {
+		margin-top: 12px;
+	}
+
+	.workings-panel {
 		overflow: hidden;
 	}
 
-	.section-heading {
-		display: flex;
-		justify-content: space-between;
-		gap: 16px;
-		padding: 22px;
+	.workings-panel .section-heading {
+		padding-bottom: 18px;
 		border-bottom: 1px solid #e2e8f0;
 	}
 
-	h2 {
-		margin: 0;
-		font-size: 1.35rem;
+	@media (max-width: 900px) {
+		.summary-heading {
+			display: grid;
+		}
+
+		.summary-grid {
+			grid-template-columns:
+				repeat(2, minmax(0, 1fr));
+		}
 	}
 
-	.section-heading p {
-		margin: 8px 0 0;
-		color: #64748b;
-		line-height: 1.5;
-	}
-
-	code {
-		border-radius: 6px;
-		background: #f1f5f9;
-		padding: 2px 5px;
-		font-size: 0.92em;
-	}
-
-	.table-wrap {
-		overflow-x: auto;
-	}
-
-	table {
-		width: 100%;
-		border-collapse: collapse;
-		font-size: 0.92rem;
-	}
-
-	th,
-	td {
-		padding: 11px 12px;
-		border-bottom: 1px solid #e2e8f0;
-		text-align: left;
-		vertical-align: middle;
-		white-space: nowrap;
-	}
-
-	th {
-		background: #f8fafc;
-		color: #475569;
-		font-size: 0.78rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	tr:last-child td {
-		border-bottom: 0;
-	}
-
-	.swatch {
-		display: inline-block;
-		width: 22px;
-		height: 22px;
-		border: 1px solid #94a3b8;
-		border-radius: 999px;
-		vertical-align: middle;
-	}
-
-	.party-name {
-		font-weight: 800;
-		color: #0f172a;
-	}
-
-	.party-usual {
-		margin-top: 3px;
-		color: #64748b;
-		font-size: 0.84rem;
-	}
-
-	.badge {
-		display: inline-flex;
-		align-items: center;
-		border-radius: 999px;
-		padding: 4px 9px;
-		font-size: 0.78rem;
-		font-weight: 800;
-	}
-
-	.badge.yes {
-		background: #dcfce7;
-		color: #166534;
-	}
-
-	.badge.no {
-		background: #fee2e2;
-		color: #991b1b;
-	}
-
-	.badge.muted {
-		background: #e2e8f0;
-		color: #475569;
-	}
-
-	.positive {
-		color: #166534;
-		font-weight: 800;
-	}
-
-	.negative {
-		color: #991b1b;
-		font-weight: 800;
-	}
-
-	@media (max-width: 1000px) {
-		.controls,
-		.summary {
+	@media (max-width: 640px) {
+		.summary-grid {
 			grid-template-columns: 1fr;
 		}
 
 		.summary-card.wide {
-			grid-column: span 1;
-		}
-
-		.slider-header {
-			align-items: stretch;
-			flex-direction: column;
+			grid-column: auto;
 		}
 	}
 </style>

@@ -1,65 +1,58 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import '../app.css';
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
+	import siteIcon from '$lib/assets/sv-icon.png';
+	import favicon from '$lib/assets/favicon.png';
 
 	let { children } = $props();
 
-	const homeHref = resolve('/');
 	const electionsHref = resolve('/elections');
 	const calculatorHref = resolve('/calculator');
-	const dataCheckHref = resolve('/data-check');
-	const engineTestHref = resolve('/engine-test');
-	const realEngineTestHref = resolve('/real-engine-test');
-	const graphTestHref = resolve('/graph-test');
+	const methodHref = resolve('/method');
+	const aboutHref = resolve('/about');
 
 	function isActive(pathname: string): boolean {
-		if (pathname === '/') {
-			return page.url.pathname === '/';
-		}
-
 		return page.url.pathname === pathname || page.url.pathname.startsWith(`${pathname}/`);
-	}
-
-	function activeClass(pathname: string): string {
-		return isActive(pathname) ? 'active' : '';
 	}
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" type="image/png" href={favicon} />
+	<link rel="apple-touch-icon" href={siteIcon} />
 </svelte:head>
 
 <a class="skip-link" href="#page-content">Skip to content</a>
 
-<header class="dev-site-header">
-	<div class="dev-site-header-inner">
-		<a class="brand" href={homeHref} aria-label="Strengthened Voting home">
-			<span class="brand-mark">SV</span>
-			<span>
-				<strong>Strengthened Voting</strong>
-				<small>Development header</small>
+<header class="site-header">
+	<div class="site-header-inner">
+		<a class="brand" href={electionsHref} aria-label="Strengthened Voting home">
+			<span class="brand-mark" aria-hidden="true">
+				<img src={siteIcon} alt="" />
+			</span>
+
+			<span class="brand-text">
+				<strong>Strengthened Voting <span>(SV)</span></strong>
 			</span>
 		</a>
 
 		<nav class="site-nav" aria-label="Main navigation">
-			<a href={homeHref} class={activeClass('/')}>Home</a>
-			<a href={electionsHref} class={activeClass('/elections')}>Elections</a>
-			<a href={calculatorHref} class={activeClass('/calculator')}>Calculator</a>
-		</nav>
-
-		<nav class="dev-nav" aria-label="Developer navigation">
-			<span>Dev</span>
-			<a href={dataCheckHref} class={activeClass('/data-check')}>Data check</a>
-			<a href={engineTestHref} class={activeClass('/engine-test')}>Engine test</a>
-			<a href={realEngineTestHref} class={activeClass('/real-engine-test')}>Real engine test</a>
-			<a href={graphTestHref} class={activeClass('/graph-test')}>Graph test</a>
+			<a href={electionsHref} class:active={isActive('/elections')}>Elections</a>
+			<a href={calculatorHref} class:active={isActive('/calculator')}>Calculator</a>
+			<a href={methodHref} class:active={isActive('/method')}>Method</a>
+			<a href={aboutHref} class:active={isActive('/about')}>About</a>
 		</nav>
 	</div>
 </header>
 
-<div id="page-content" class="page-shell">
+<div id="page-content" class="site-content">
 	{@render children()}
 </div>
+
+<footer class="site-footer">
+	<div class="site-footer-inner">
+		<p><strong>Strengthened Voting</strong></p>
+		<p>Exploring vote share, mandate and representative power.</p>
+	</div>
+</footer>

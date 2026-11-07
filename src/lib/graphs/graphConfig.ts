@@ -176,3 +176,21 @@ export const electionTransformationConfig = {
 		dumbbellColumnFraction: 0.381953
 	}
 } as const;
+
+export const svControlPanelConfig = {
+	muscleGraph: {
+		// Change this one number to scale the whole muscle graph up or down.
+		size: 400,
+
+		// These are proportional to size, so the graph keeps its shape as size changes.
+		leftPaddingRatio: 0.065,
+		rightPaddingRatio: 0.06,
+		topPaddingRatio: 0.025,
+
+		// These stay readable when the graph is enlarged.
+		labelFontSize: 10,
+		axisTitleFontSize: 12,
+		diamondSize: 6,
+		diamondStrokeWidth: 0.5
+	}
+} as const;
