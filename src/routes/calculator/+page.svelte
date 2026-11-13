@@ -9,6 +9,7 @@
 		type CustomElectionCalculation,
 		type CustomPartyInput
 	} from '$lib/sv/calculateCustomElection';
+	import CountrySelect from '$lib/components/layout/CountrySelect.svelte';
 	import {
 		controlBarState,
 		DEFAULT_SEATS
@@ -263,21 +264,6 @@
 			dataset.country?.usualName ??
 			datasetCountryId(dataset).toUpperCase()
 		);
-	}
-
-	function countryFlag(countryId: string): string {
-		const flags: Record<string, string> = {
-			gb: '🇬🇧',
-			jp: '🇯🇵',
-			fi: '🇫🇮',
-			us: '🇺🇸',
-			nl: '🇳🇱',
-			ca: '🇨🇦',
-			pl: '🇵🇱',
-			lt: '🇱🇹'
-		};
-
-		return flags[countryId] ?? '🏳️';
 	}
 
 	function electionSortValue(
@@ -1721,19 +1707,13 @@
 				<label for="calculator-country-select">
 					Country
 				</label>
-				<select
+
+				<CountrySelect
 					id="calculator-country-select"
 					bind:value={selectedCountryId}
+					allowNone
 					onchange={handleCalculatorCountrySelect}
-				>
-					<option value="">None</option>
-					{#each calculatorDatasets as dataset (datasetCountryId(dataset))}
-						<option value={datasetCountryId(dataset)}>
-							{countryFlag(datasetCountryId(dataset))}
-							{datasetCountryName(dataset)}
-						</option>
-					{/each}
-				</select>
+				/>
 			</div>
 
 			<div class="sv-selector-row">

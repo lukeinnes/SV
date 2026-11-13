@@ -16,6 +16,7 @@
 		calculateRealElection,
 		type RealElectionCalculation
 	} from '$lib/sv/calculateRealElection';
+	import CountrySelect from '$lib/components/layout/CountrySelect.svelte';
 	import {
 		controlBarState,
 		DEFAULT_COUNTRY_ID
@@ -47,8 +48,6 @@
 
 	function electionSortValue(election: Election): number {
 		const possibleValues = [
-			election.year,
-			election.date,
 			election.id,
 			election.briefName,
 			election.fullName
@@ -297,19 +296,13 @@
 			{#snippet selectors()}
 				<div class="sv-selector-row">
 					<label for="country-select">Country</label>
-					<select
+
+					<CountrySelect
 						id="country-select"
 						bind:value={selectedCountryId}
-					>
-						{#each countryDatasets as dataset (dataset.country.id)}
-							<option value={dataset.country.id}>
-								{countryFlag(dataset.country.id)}
-								{dataset.country.name}
-							</option>
-						{/each}
-					</select>
+					/>
 				</div>
-
+				
 				<div class="sv-selector-row">
 					<label for="election-select">Election</label>
 					<select
