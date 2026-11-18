@@ -1,43 +1,43 @@
 # Strengthened Voting — Editorial Style Guide
 
-*Version 0.1 · Working conventions for drafting, reviewing and publishing the Explanation.*
+*Version 0.2 · Working conventions for drafting, reviewing and publishing the SV Explanation.*
 
 ## 1. Purpose and editorial philosophy
 
-The Explanation presents Strengthened Voting (SV) as a reasoned proposal: a political argument developed into a mathematical model, examined for its consequences, and assessed against alternatives. It is neither a neutral textbook nor a promotional brochure.
+The Explanation presents **Strengthened Voting (SV)** as a reasoned political proposal developed into a mathematical electoral system. It should be persuasive without disguising its premises, and mathematically rigorous without demanding advanced mathematics from every reader.
 
-The intended readers include motivated non-specialists and academics. The main narrative should be accessible without advanced mathematics; the complete reasoning and technical details must remain available for scrutiny.
+The audience includes the **motivated layperson**, who wants to understand the argument and its significance, and the **academic reader**, who wants to scrutinise the assumptions and verify the mathematics.
 
-**Primary rule:** explain the intuition, make the premises explicit, derive the consequences confidently, and show what each result means.
+**Guiding principle:** explain the intuition, establish the premise or definition, derive the result, and explain what it means.
 
-Accessibility does not require omitting mathematics. Rigour does not require placing every algebraic step in the main text.
+The main argument must be understandable without opening supplementary algebra. That algebra must nevertheless remain available for independent verification.
 
 ### Advocacy and intellectual honesty
 
-Derivation is entitled to **advocate** SV as the author's preferred conclusion. It need not repeatedly retreat to qualifications once a premise has been clearly introduced and defended. From that point, develop its consequences in a confident, logical voice.
+Derivation advocates SV as the author's preferred proposal. It need **not** repeat a caveat about its premises at every mathematical step. Introduce and justify each premise clearly, then develop its consequences confidently.
 
-However, distinguish:
+A short statement near the beginning of Derivation should explain that its mathematical conclusions follow from premises established throughout, while those premises are normative judgements open to criticism in Evaluation.
 
-| Claim | How to present it |
+Distinguish these kinds of statements:
+
+| Claim | Appropriate treatment |
 | --- | --- |
-| **Definition** | “We define…” |
-| **Normative premise** | “SV proposes…”, followed by the substantive justification |
-| **Modelling assumption** | “We model this by…”, explaining the mathematical choice |
-| **Deduction** | “Therefore…”, “It follows that…” |
-| **Illustration** | “Consider…”, with assumptions and parameters stated |
-| **Behavioural prediction** | “This may encourage…”, with any assumptions about voters or parties |
-| **Empirical assertion** | Support it with evidence and a reference |
+| **Definition** | “We define…”; specify the meaning of a quantity |
+| **Normative premise** | “SV proposes…”; explain why the principle is advocated |
+| **Modelling assumption** | “We model this as…”; identify the mathematical choice |
+| **Mathematical deduction** | “It follows that…”; state the consequence confidently |
+| **Worked example** | “Consider…”; state the conditions of the example |
+| **Behavioural prediction** | “This may encourage…”; identify assumptions about voters or parties |
+| **Empirical claim** | Support it with relevant evidence |
 
-A consequence may be presented firmly when it genuinely follows from premises already established. Avoid repeating “under our assumptions” at every step. Reintroduce a premise when it changes, is controversial in a *new* way, or the reader has moved to a substantially different argument.
+Do not portray a modelling choice as mathematically inevitable, or a thought experiment as empirical evidence. Equally, do not repeatedly weaken a valid deduction merely because it follows from an openly stated political premise. Systematic objections, alternative premises and the literature review belong primarily in **Evaluation**.
 
-Do not portray a modelling choice as a theorem or a thought experiment as empirical evidence. Reserve the fuller criticism of SV's premises and alternatives for Evaluation.
+## 2. Organisation of the Explanation
 
-## 2. Organisation and page structure
-
-The planned top-level navigation is:
+The planned navigation is:
 
 1. **Voting Systems**
-2. **Derivation**
+2. **Derivation** (navigation folder)
    - **2.1 From Votes to Seats**
    - **2.2 The Mandate Equation**
    - **2.3 The Mandate Coefficient**
@@ -46,116 +46,91 @@ The planned top-level navigation is:
 4. **Evaluation**
 5. **Glossary**
 
-Derivation is a navigation folder containing **four webpages**, not a fifth overview article in addition to them. **Implementation is one webpage**; “The Complete SV Process” is its concluding subsection and the conclusion of Derivation as a whole.
+Derivation contains **four webpages**, not an additional introductory page at folder level. **Implementation is one webpage.** Its final subsection, “The Complete SV Process”, also concludes Derivation.
 
-Analysis and Evaluation remain single webpages provisionally; either may later become a folder if their developed content warrants it. Do not split pages merely because a section is long. Split where the argument has a meaningful conceptual boundary.
-
-The Glossary is the current fifth navigation item. A future **Appendices** folder containing the Glossary, References and perhaps technical notes is a sensible possible evolution, **not a change to the present navigation**. Reference management should not wait for that decision.
+Analysis and Evaluation remain single webpages provisionally; either may be divided later if its content calls for it. The Glossary is presently a top-level entry. An **Appendices** folder containing Glossary, References and technical notes is a possibility, **not a settled change**.
 
 ### Responsibilities of the sections
 
-- **Voting Systems:** the political problem, established alternatives and the criticisms or objectives motivating SV.
-- **Derivation:** the premises, equations, calibration and practical rules required to specify SV.
+- **Voting Systems:** the electoral problem, rival approaches and objectives motivating SV.
+- **Derivation:** the premises, equations, calibration and practical rules specifying SV.
 - **Analysis:** what the model does and what conditional incentives emerge, including merger premiums, consolidation and differentiation.
-- **Evaluation:** whether those properties are desirable, their institutional practicality, competing choices and relevant literature.
-- **Glossary:** a reference to terms, notation and definitions, not a substitute for explaining them at first use.
+- **Evaluation:** whether the resulting properties are desirable, institutional choices, alternatives and relevant research.
+- **Glossary:** definitions and notation for reference, not a substitute for explaining them at first use.
 
-An idea should normally have **one main home**. Introduce it fully where it first becomes necessary to advance the argument, not simply where it first happens to be relevant. Later sections should recall the result briefly and link back rather than restating the derivation.
+**One idea should have one principal home.** Before developing a passage, look ahead to later sections. A short forward reference is often preferable to prematurely introducing an idea and then repeating it.
 
-**Look ahead while editing.** Before expanding a paragraph, check whether its natural home is a later subsection or another page. This is the principal way to prevent repetition.
+## 3. Narrative voice and prose
 
-## 3. Narrative voice and style
+Use **British English**, normally in the present tense, with an active, direct, explanatory voice.
 
-Use **British English**, present tense for the mathematical argument, and an active, direct explanatory voice where possible.
+Use **“we”** to guide the reader through reasoning: “We can now examine…”. Use **“SV proposes”** for political commitments. Use direct statements for established deductions: “The Upper Bound increases…”. Avoid repeatedly referring to **“the author”** in the third person.
 
-Use **“we”** to lead the reader through reasoning: “We can now examine…”, “Substituting this expression…”. Use **“SV proposes”** for the system's normative commitments. Use direct statements for results already established: “The Upper Bound increases…”.
+The manuscript may advocate a position without pretending that the reader already agrees. Prefer economical but complete sentences, precise verbs and clear transitions. Avoid repetitive rhetorical questions, unnecessary hedging and prose that merely reads a displayed equation aloud.
 
-Do **not** switch to “the author” as a regular narrative voice. Reserve first-person singular for a genuinely personal statement if one is ever needed; it should be rare.
+### Capitalisation: Party and party
 
-The manuscript can be persuasive without pretending that the reader already agrees:
+Use **Party** when identifying a particular entity: **Party A**, **Party U**, **Party $i$**, **Party 1**.
 
-- Prefer: “SV proposes that broader political agreements should receive additional Mandate.”
-- Avoid: “We all recognise that larger parties deserve more power.”
-- Prefer: “We can now derive the consequence of this premise.”
-- Avoid: “The author therefore claims that…”
+Use **party** in the generic sense: “a political party”, “three parties”, “the largest party”, “the party's Mandate”. Do not capitalise an ordinary reference solely because the party is identifiable from context.
 
-Use passive constructions when the actor is irrelevant: “The opposition vote is divided equally…”.
+Capitalise the formal names of defined SV quantities where used as terms: **Raw Votes, Vote Share, Political Mandate, Mandate Share, Marginal Vote Strength, Mandate Coefficient, Innes Constant, Seat Quota, Seat Share, Advantage Ratio** and **Apportionment Ratio**. Use normal lower case for ordinary descriptive meanings.
 
-Prefer economical but complete paragraphs, precise verbs and clear transitions. Do not shorten a passage so far that a reader loses the causal connection between its steps. Avoid filler, repetitive rhetorical questions, unexplained jargon and unnecessary hedging.
+### Useful political language
 
-Capitalise the formal names of SV quantities consistently (Vote Share, Political Mandate, Mandate Share, Seat Quota, Seat Share, Marginal Vote Strength, Mandate Coefficient, Innes Constant). Use lower case for ordinary descriptive uses.
+Retain **“winner-takes-all dynamic”** when explaining FPTP **within each constituency**. It provides a useful contrast with the increasingly concentrated Mandate Share produced by a very large $k$.
 
-## 4. Standard progression of an argument
+A very large $k$ can produce **winner-takes-most or winner-takes-all-like** Mandate outcomes. Do not suggest SV literally becomes FPTP, which also depends on constituency geography.
 
-Where suitable, present a new idea in this order:
+## 4. Structure and placement of arguments
 
-**Political or intuitive problem → definition/premise → mathematics → result → interpretation.**
+Where useful, progress through **intuition → definition or premise → mathematics → result → interpretation**. This is a guide, not a rigid template.
 
-The order need not be mechanically repeated for every minor calculation.
+Introduce important equations with the question they answer. Follow a result with its significance, not just a verbal repetition of its symbols.
 
-Introduce significant equations with the question they answer. Follow them with the political or mathematical significance of the result, not a sentence merely reading the notation aloud.
+Use worked elections to make abstract relationships tangible. Keep the same example across related subsections when continuity helps; change it when a different case reveals a new property.
 
-A good worked example normally follows one coherent election through several steps. Change the example when the new concept needs different conditions, and explain the change.
+Before adding material, ask whether it belongs **here** or in a later subsection, Analysis or Evaluation. Once an idea is established, provide a short reminder and a cross-reference rather than a second full explanation.
 
-At the end of each Derivation webpage, include a short **“What we have established”** paragraph or equivalent prose, followed where useful by the question motivating the next page. This is a synthesis, **not** a second summary of every subsection.
+### Ending a webpage
 
-Provide navigational links underneath the conclusion:
+End each page with a **natural synthesis or transition**, perhaps ending in a question that motivates the next page. **Do not require a heading called “What we have established”.** A longer page may warrant a descriptive conclusion heading; a short page may flow naturally into its final paragraph.
+
+Do not mechanically repeat every subsection in a closing summary.
+
+Place website navigation beneath the ending:
 
 **← Previous: [page title] · Next: [page title] →**
 
-At the final Derivation page, the next link leads to Analysis. The website should generate the actual URLs and navigation presentation.
+At the end of Implementation, the next destination is Analysis. The website should eventually generate these links, rather than each manuscript maintaining its own URLs.
 
-## 5. Mathematics for two levels of reader
+## 5. Mathematics and expandable workings
 
-The main text must be intelligible **without opening expandable algebra**. It should retain all equations necessary to understand the model and the logical progression, rather than merely asserting conclusions.
+The main narrative must contain the **essential equations** and the reasoning necessary to understand their purpose. It must be followable without opening technical details.
 
-Put lengthy equation-solving, integrations, Taylor expansions and auxiliary proofs in titled, expandable sections. These are rigorous parts of the work, not disposable footnotes.
+Put lengthy integrations, differential-equation solutions, Taylor expansions and auxiliary proofs into expandable sections. These are rigorous parts of the manuscript, not disposable notes.
 
-Each disclosure must:
+Each disclosure should have a **descriptive title**, such as “Show the differential-equation solution” or “Derive the opposition limit”; present complete and checkable workings; and close before the main narrative resumes with the result.
 
-1. Begin at a meaningful point immediately after the question or equation it supports.
-2. Have a descriptive title, such as **“Show the differential-equation solution”** or **“Derive the opposition limit”**.
-3. Include a self-contained proof with defined symbols and enough working to verify it.
-4. End before the main narrative resumes with the resulting expression and interpretation.
-5. Permit the reader who leaves it closed to continue without losing the argument.
+The Word draft used a Heading 5 “+Expand to see breakdown” and an empty Heading 5 to delimit these passages. This was an **intentional convention**. Markdown should use explicit opening and closing markup, not empty headings.
 
-The Word draft previously used Heading 5 “+Expand to see breakdown” and an empty Heading 5 to delimit these passages. This was intentional. In Markdown, use an **explicit disclosure structure**, not an empty heading, so the start and end cannot be mistaken for manuscript text.
-
-A provisional portable convention is the HTML details element:
-
-<details>
-<summary>Show the differential-equation solution</summary>
-
-The intermediate working and equations belong here.
-
-</details>
-
-Test mathematical rendering *inside* such elements in VS Code, GitHub and the eventual website before adopting this markup universally. If a renderer fails, implement an equivalent named disclosure in the Svelte publishing pipeline. **Do not silently discard hidden algebra during conversion.**
+A possible portable convention is `<details>` with a `<summary>` title. **Test mathematics inside such disclosures in VS Code, GitHub and the website before standardising it.** If necessary, the Svelte publishing pipeline should provide an equivalent component. Never discard hidden workings when converting the manuscript.
 
 ## 6. Mathematical notation and economy
 
-Maintain one preferred symbol and one formal name for each quantity, recorded in the central Glossary. Use consistent subscripts, capitalisation, units and meanings.
+Keep one consistent symbol and formal name for each quantity. The Glossary is the main reference, but symbols should be explained at first use.
 
-### Generic variables versus particular parties
+### Generic variables and indexed quantities
 
-Use **\(x\)** when discussing a general Vote Share, a curve, a derivation applying to any party, or a single focal party whose identity is already clear. Use **\(x_i\)** when referring to a specified party in a multi-party election, defining per-party quantities, or writing sums and rules across parties.
+Use **$x$** for a generic Vote Share, a graph variable or a derivation focused on one representative party. Use **$x_i$** for the Vote Share of **Party $i$** or when comparing multiple parties.
 
-Apply the same principle to **\(f\)** versus **\(f_i\)**:
+Likewise, use **$f$** for generic Mandate Share and **$f_i$** for the share of a specified party. Use **$f(x)$** for a curve where its other parameters are fixed, and **$f_{\min}(x;k)$** or **$f_{\max}(x;k)$** when the dependence on both parameters matters.
 
-- **\(f_i\)**: the Mandate Share of Party \(i\).
-- **\(f(x)\)**: a general curve or Election Line, with fixed parameters explained nearby.
-- **\(f_{\max}(x;k)\)**, **\(f_{\min}(x;k)\)**: functions whose dependence on Vote Share and Mandate Coefficient matters.
-- **\(f\)**: the ordinate or a generic Mandate Share when no party-specific index is needed.
+Do not add subscripts and function arguments reflexively. Use enough notation to remove ambiguity, and no more.
 
-Do not add subscripts reflexively to every expression. Use enough notation to make the meaning unambiguous, and no more.
+### Function notation and the Mandate Equation
 
-### Function notation versus variable notation
-
-Use **\(M(x)\)** when defining or investigating the *function* that maps Vote Share to Mandate. Use **\(M_i=M(x_i)\)** when applying that function to Party \(i\). Thereafter, **\(M_i\)** is normally sufficient in an election table or apportionment equation.
-
-An unindexed **\(M\)** may be used for the Mandate of a single clearly identified focal party, but do not use it if it could be confused with **Total Mandate**. Prefer **\(\Sigma M\)** or an explicit sum for Total Mandate.
-
-Use **\(m(x)\)** only for the unscaled Mandate during the initial derivation; explain clearly when it becomes the scaled **\(M(x)\)**. Do not switch between lowercase and uppercase without signalling that distinction.
+Use **$M(x)$** when defining or investigating Mandate *as a function* of Vote Share. Use **$M_i=M(x_i)$** when applying that function to Party $i$. Thereafter **$M_i$** usually suffices.
 
 For example:
 
@@ -163,175 +138,167 @@ $$
 M(x)=A(e^{kx}-1)
 $$
 
-defines the general function, while
+and
 
 $$
-M_i=A(e^{kx_i}-1)
+M_i=A(e^{kx_i}-1).
 $$
 
-applies it to Party \(i\).
+An unindexed $M$ may refer to the Mandate of one clearly identified party, but must not be confused with **Total Mandate**, $\Sigma M$. Use lowercase $m(x)$ only for the initial unscaled Mandate; explain its transition to the scaled $M(x)$.
 
-It is usually unnecessary to write **\(M(x_i)\)** at every later occurrence.
+### Raw Votes, Vote Share and Electoral Threshold
 
-### Initial definitions and later shorthand
+Use **Raw Votes**, $v_i$, for valid votes cast for Party $i$ before thresholding and normalisation. For constituency Raw Votes use **$v_{i,c}$**, where $c$ indexes constituencies; $i,j$ index parties.
 
-Define a symbol at first use within the relevant argument. On a later webpage, give a short reminder when needed, not a full second derivation. A reader should be able to enter a page directly and obtain the needed context, supported by links to the Glossary.
+Use **Vote Share**, $x_i$, for the **normalised input** to the electoral calculation. Distinguish this from a party's share of *all* original valid party votes when thresholding changes the denominator.
 
-Use **\(R_i\)** for the **Seat Priority Score** in Sainte-Laguë, rather than **\(P_i\)**, which risks confusion with other meanings of \(P\). The ranking rule is
-
-$$
-R_i=\frac{M_i}{2s_i+1}.
-$$
-
-Avoid introducing Greek letters merely to avoid an English-letter collision if the result is likely to confuse a general reader.
-
-### Exact equality and approximation
-
-Use **\(=\)** for exact mathematical equalities, and **\(\approx\)** for rounded or truncated numerical values.
-
-Preferred:
+With no threshold, define:
 
 $$
-x_*=1-\frac{1}{\sqrt{2}}\approx0.292893
+x_i=\frac{v_i}{\sum_jv_j}.
+$$
+
+With an Electoral Threshold, determine eligibility **against the original valid vote total** $V=\sum_jv_j$. Keep $\tau$ as a proportion, and define:
+
+$$
+\mathcal E=\{i:v_i\geq\tau V\}.
+$$
+
+The same threshold expressed in **Raw Votes** is $\tau V$. For eligible parties, renormalise:
+
+$$
+x_i=\frac{v_i}{\sum_{j\in\mathcal E}v_j},\qquad i\in\mathcal E.
+$$
+
+Eligible Vote Shares sum to one. **Do not apply the threshold a second time to the renormalised shares.**
+
+**SV applies its nonlinear Mandate Equation to the post-threshold, renormalised Vote Shares.** Do not calculate Mandates using original unfiltered shares and merely remove ineligible Mandates afterwards: the results generally differ.
+
+Discuss the rationale, strategic consequences and effects on the Bounds and calibration in **Implementation: Electoral Threshold**. A brief introduction suffices in **From Votes to Seats**.
+
+Distinguish spoilt or invalid ballots from valid votes for parties below the threshold; they do not necessarily enter the original vote total in the same way.
+
+### Other quantities and apportionment
+
+- $S$: total legislature size; $s_i$: integer seats awarded to Party $i$.
+- $f_i$: Mandate Share before integer apportionment.
+- $q_i=Sf_i$: Seat Quota, **introduced only where useful**, especially in Implementation.
+- $N$: number of seats awarded so far in a sequential illustration, distinct from final $S$.
+- $R_i=M_i/(2s_i+1)$: the **Seat Priority Score** for Sainte-Laguë, preferred over $P_i$.
+
+**Seat Quota is not a mandatory intermediary** in introductory transformations. An apportionment rule may convert Mandate Share directly into integer seats; Sainte-Laguë can be implemented sequentially.
+
+Distinguish a continuous majority of Mandate Share from a majority of actual whole seats.
+
+### Exact equality and numerical approximation
+
+Use **$=$** for an exact equality and **$\approx$** for a rounded or truncated numerical value.
+
+$$
+x_*=1-\frac{1}{\sqrt2}\approx0.292893
 $$
 
 $$
-\Lambda\approx5.33684511056
+\Lambda\approx5.33684511056.
 $$
 
-Do **not** routinely append an ellipsis after an approximate decimal: **\(\approx5.3368\)** already says that the displayed digits are approximate. Avoid **\(=5.3368\ldots\)** as the default way of reporting a computed root, since the unspecified continuation does not provide an exact mathematical definition.
+**Do not routinely add an ellipsis after an approximation:** $\approx5.3368$ already indicates an approximate value. Avoid $=5.3368\ldots$ as the standard way of reporting a numerically solved root.
 
-Use ellipses naturally for continuing sequences (such as the Sainte-Laguë divisors \(1,3,5,7,\ldots\)), or when the decimal expansion itself is the object of discussion.
+Use ellipses for continuing sequences, such as $1,3,5,7,\ldots$, or when the decimal expansion itself is being discussed. Where an exact expression is illuminating, state it before the approximation, as in $10\ln2\approx6.9315$. Keep decimal precision consistent within numerical tables.
 
-Where an exact form is illuminating, give it **before** the approximation: **\(10\ln2\approx6.9315\)**. Specify the desired precision for numerical tables; use consistent decimal places within a comparison.
+## 7. Transformation diagrams: quantities and processes
 
-Use fractions in exact theoretical equations and percentages in explanatory prose where that helps the reader.
+**Every node represents a measurable, defined quantity; every arrow represents the process, operation or equation converting one quantity into another.**
 
-### Other notation conventions
+Do not place “Threshold”, “Normalisation”, “Apportionment” or “Constituency plurality” in nodes: these are operations and belong on **arrows**.
 
-Retain **\(S\)** for the final legislature size and **\(N\)** for the number of seats allocated so far in an animated allocation example. Distinguish pre-threshold theoretical Mandate Share from post-threshold eligible Mandate Share when eligibility changes the denominator.
+The conceptual SV chain is:
 
-Do not silently substitute a practical integer-seat majority for a continuous majority of Mandate Share.
+$$
+v_i
+\xrightarrow{\text{Threshold and normalisation}}
+x_i
+\xrightarrow{\text{Mandate Equation}}
+M_i
+\xrightarrow{\text{Normalisation}}
+f_i
+\xrightarrow{\text{Apportionment}}
+s_i.
+$$
 
-## 7. Equations and references
+“Normalisation” may occur on two arrows because it describes distinct operations: producing eligible Vote Share from Raw Votes, then producing Mandate Share from party Mandates. Explain these in the adjacent prose.
 
-**Do not number every displayed equation.** The threshold for numbering should be high: an equation merits a stable reference when it defines a central quantity, states a major result, or is likely to be cited repeatedly in later sections.
+**Do not insert Seat Quota solely because it is later useful in deriving an apportionment rule.** For FPTP, constituency Raw Votes become seats by constituency plurality and tallying.
 
-Likely candidates include the Mandate Equation, Mandate Share, the Bounds of Power, the calibration condition for the Innes Constant and the Sainte-Laguë allocation rule. Routine algebraic substitutions and intermediate working should remain unnumbered.
+Do **not** include a composite figure merely to repeat several adjacent transformation diagrams. A new figure must communicate something additional.
 
-Use the **name** of an important equation as the principal reader-facing reference. Where a number is helpful for academic citation, accompany it with the name: “the Upper Bound of Power (Equation …)”.
+## 8. Equations, figures and references
 
-Give significant equations stable *semantic identifiers* in the source (for example, an identifier meaning “mandate-equation”), independent of whatever display number the website eventually assigns.
+### Equation numbering
 
-The final numbering scheme can follow the page hierarchy, but **do not hard-code page-dependent numbers into manuscript prose** until the website can manage cross-references reliably.
+**Number only a small number of important equations.** A number is useful where an equation defines a central quantity, establishes a major result or will be cited repeatedly.
 
-Equations, figures and tables have **separate numbering sequences**.
+Candidates include the Mandate Equation, Mandate Share, Upper and Lower Bounds, the Innes Constant calibration condition and the Sainte-Laguë rule. Intermediate calculations should ordinarily remain unnumbered.
 
-## 8. Figures, diagrams and interactive content
+Prefer **named references**, supplemented by numbers where helpful: “the Upper Bound of Power (Equation …)”. Give important equations stable semantic identifiers; the website should eventually generate displayed numbers and cross-references. Avoid hard-coding page-dependent equation numbers into manuscript prose.
 
-Figures are integral to the explanation, not decorative extras. **Every graph, diagram and substantive illustration should have a caption** and a stable source identifier. Use figure numbers on the published website, ideally generated from the structure rather than typed manually into Markdown.
+### Figures and interactive content
 
-A figure should answer a particular question or make a specific relationship visible. Introduce it in the prose, and explain the observation that the reader should draw from it.
+**Every substantive graph, diagram and illustration should have a caption and stable identifier.** Small displayed mathematical arrow expressions need not be numbered as separate figures.
 
-Prefer **visual continuity** across a sequence of related graphs. Retain axes, scales, colours and layout where possible, while revealing new information: for example, Election Lines → Upper Bound → Lower Bound → Majority-Vote Boundary.
+Every figure must serve an explanatory purpose. Introduce what to look for, and explain what the reader should notice. Prefer continuity of axes, colours, scales and layout when progressively revealing Election Lines and the Bounds of Power.
 
-For every important figure, maintain:
+For important figures, retain a readable static **SVG or PNG** in Markdown, a concise caption, meaningful alternative text, clear axes and units, and a stable identifier. Provide an interactive Svelte equivalent where interaction genuinely improves understanding.
 
-- A readable static SVG or PNG in the manuscript.
-- A descriptive caption and useful alternative text.
-- Clearly identified variables, units, axes and assumptions.
-- A stable identifier suitable for an interactive replacement.
-- An interactive Svelte implementation where controls materially improve understanding.
+The static figure must communicate the essential result without interaction. Do not replace it with only a placeholder promising a future interactive figure. Number figures separately from equations and tables; generate numbering through the website when practical.
 
-The static image must convey the essential claim without requiring interaction. The Svelte component may add sliders, annotations, animation or linked plots, but must not change the mathematics.
+## 9. Worked examples and verification
 
-For example, a Markdown source can contain:
+Use hypothetical elections deliberately. State Vote Shares, $k$, legislature size, threshold assumptions and whether outputs are continuous or integer-valued. Distinguish illustrative $k$ values from the reference Innes Constant $\Lambda$.
 
-    <!-- figure-id: bounds-of-power -->
-    ![Upper and Lower Bounds of Mandate Share against Vote Share](./figures/bounds-of-power.svg)
+Reuse an example across related arguments when helpful; change it only to establish a genuinely new insight. Independently verify numerical tables, captions, graph coordinates and seat allocations against the governing equations, including totals and rounding.
 
-    *Bounds of Power at a fixed Mandate Coefficient.*
+When comparing Word and Markdown, inspect **rendered Word equations** before alleging algebraic mistakes: extraction may obscure superscripts, subscripts, fractions and symbols. Distinguish transcription errors from mathematical errors.
 
-Keep figure assets in a predictable folder. Prefer **SVG** for mathematical diagrams and **PNG** for temporary raster illustrations. Do not leave a figure specification as the *only* visual in a reader-facing manuscript when a usable static illustration is available.
+## 10. Mathematical connections and the silver ratio
 
-## 9. Worked elections and numerical verification
+Include mathematical connections that make the argument memorable or invite investigation. The appearance of the **silver ratio** is worth identifying, even though naming the constant is not necessary to complete the SV derivation.
 
-Use hypothetical elections deliberately. State the Vote Shares, \(k\), legislature size where relevant, threshold assumptions and whether an allocation is continuous or rounded.
+Explain that its appearance follows from the proposed **pairwise-encounter majority criterion**, not that the existence of a named constant independently proves the political premise. Once the premise has been justified, continue confidently rather than continually qualifying its consequences.
 
-Distinguish **illustrative** values of \(k\) from the reference Innes Constant \(\Lambda\). Reuse an example across adjacent subsections when that aids comprehension; change examples to expose a genuinely new property.
-
-A worked example should deliver a named insight, not simply demonstrate arithmetic.
-
-Before publication, independently recompute **every** numerical table, threshold example, captioned value and plotted coordinate from the stated equations. Check that totals and rounded displays are mutually consistent.
-
-If a figure or table was transcribed from Word, inspect the original equation object or a rendered page before alleging an algebraic error: text extraction can omit subscripts, fractions and superscripts.
-
-Never treat a successful transcription as mathematical verification; these are separate checks.
-
-## 10. The silver ratio and other mathematical connections
-
-It is legitimate to mention the **silver ratio**, even though identifying a familiar mathematical constant is not necessary to complete the derivation. This is a memorable and potentially persuasive connection, and can enrich the explanation.
-
-Present it accurately as a **consequence of the chosen pairwise-encounter calibration criterion**, not as independent proof that the criterion is politically correct. One well-placed explanation of the connection is sufficient; avoid repeatedly undercutting or re-justifying it thereafter.
-
-Related identities, geometric constructions and supplementary mathematics may appear in optional notes when they reward curiosity without interrupting the core argument.
-
-The same principle applies elsewhere: include mathematically interesting details when they illuminate the model or make its ideas memorable, but keep the argument's main route visible.
+Put extensive identities, geometric curiosities and auxiliary constructions into optional material when they would interrupt the main argument.
 
 ## 11. Website-aware writing and navigation
 
-Write each manuscript as a webpage-ready argument, but do not allow implementation details to dictate its logic.
+Write manuscripts as coherent essays suitable for webpage publication. Website design should **inform** content organisation without dictating the argument.
 
-Each page should have a clear opening purpose, an internally coherent sequence of sections, and an ending that establishes what has been learned. A fixed left-side contents navigation on larger screens, and an accessible equivalent on mobile, should identify the reader's position in the overall Explanation and within the current page.
+Each webpage needs a clear purpose, logical subsections and a natural concluding transition. Use a persistent contents panel where appropriate on large screens, with an accessible equivalent on mobile, to show both the overall journey and the reader's position within a page.
 
-Use descriptive headings and stable anchors for sections, figures and important equations. Avoid headings such as “Further Thoughts” or “Some Mathematics” when a subject-specific title would work.
+Use descriptive headings and stable anchors. Support a reader arriving through a direct link with concise reminders and links, not repeated derivations.
 
-A reader arriving at any page through a direct link should understand its immediate purpose and find a route to any required earlier definition. Do not copy lengthy previous sections merely to make the page self-contained.
+Maintain the Explanation in **Markdown**, using `$...$` for inline maths and `$$...$$` for displayed maths. Embed static illustrations through relative paths and use Svelte components to enhance interactivity, disclosures, navigation and cross-references.
 
-The maintained manuscript should remain **readable in GitHub and VS Code**, including mathematics and images. The website may replace static figures with Svelte components and enhance cross-references and disclosures.
-
-Use Markdown as the primary source of prose, equations and image references; keep figure assets and interactive Svelte components separately. Do not maintain diverging Word and Markdown “final” versions.
-
-The manuscript uses standard Markdown mathematics delimiters: **single dollar signs for inline maths and double dollar signs for displayed maths**. Verify rendering in the chosen preview and publishing environments.
+Do not maintain divergent Word and Markdown “final” manuscripts. Word may remain useful for exploratory drafting and sketches.
 
 ## 12. Citations and references
 
-Cite historical facts, empirical political claims, literature comparisons and established technical results where a source materially supports the point. Do not clutter elementary, self-contained algebra with citations.
+Cite empirical political claims, historical facts, established electoral methods and consequential external research. Do not clutter self-contained elementary algebra with unnecessary references.
 
-Distinguish what SV proposes originally from concepts already present in electoral systems research. In Evaluation, engage directly with relevant objections and alternative approaches rather than presenting only supportive literature.
+Distinguish SV's original arguments from established electoral literature. Evaluation should engage with objections and alternative approaches, not just supportive work. Collect bibliographic details as sections are drafted, even before deciding whether a References page belongs under a future Appendices folder.
 
-Use descriptive hyperlinks where helpful. Keep enough bibliographic information to support a later consolidated **References** page. The exact citation style can be settled when Evaluation's literature review takes shape, but source attribution should be collected during drafting, not retrofitted.
+## 13. Redrafting workflow and final checks
 
-References may eventually live under an **Appendices** navigation folder with Glossary and technical notes; for now, this remains an open information-architecture decision.
-
-## 13. Redrafting and review workflow
-
-For each section, work from the latest Word material, the Markdown manuscript and any relevant diagrams. Treat neither as automatically authoritative when they disagree.
+For each page, compare the latest Word draft, Markdown manuscript, style guide and relevant diagrams. Neither manuscript is automatically authoritative when they disagree.
 
 Review in this order:
 
-1. **Argument and placement:** What does this passage establish, and is this the right place for it? What belongs in a later section?
-2. **Completeness:** Are definitions, transitions or critical reasoning steps missing?
-3. **Mathematical accuracy:** Verify the formulae and examples independently; check the rendered equations, not only extracted text.
-4. **Visual explanation:** Preserve useful diagrams and identify missing static or interactive illustrations.
-5. **Prose:** Apply the voice, terminology, brevity and accessibility conventions.
-6. **Publishing:** Check captions, named disclosures, references, navigation and rendering.
+1. **Purpose and placement:** What must this passage establish, and what belongs later?
+2. **Completeness:** Which necessary definitions, transitions or steps are missing?
+3. **Mathematics:** Verify formulae and computed values; inspect rendered equations.
+4. **Visuals:** Preserve useful diagrams and remove redundant presentations.
+5. **Prose:** Apply the voice, capitalisation, terminology and clarity conventions.
+6. **Publishing:** Check disclosures, figures, captions, navigation, links and rendering.
 
-Avoid polishing passages that should be moved or removed. Editorial consistency is a whole-document responsibility: changes to a definition or example may require adjustments to later sections.
+Before approval, check that the main argument is accessible without hidden proofs; its mathematics is verifiable; its premises are clear and not repeatedly requalified; its symbols distinguish Raw Votes, eligible Vote Share, Mandate, Mandate Share and seats; its examples are internally consistent; its visuals add real explanatory value; and its conclusion leads naturally to the next page.
 
-### Final approval checklist
-
-A revised page should pass the following tests:
-
-- Can a motivated non-specialist follow the core argument without opening supplementary algebra?
-- Could a technically trained reader verify each significant derivation?
-- Are premises clearly introduced, then used confidently rather than continually requalified?
-- Is every major idea introduced in its best location, with minimal duplication?
-- Are Vote Share, Mandate, Mandate Share, quotas and actual seats kept distinct?
-- Are all numerical examples and diagrams consistent with the equations?
-- Does each figure contribute a clear insight and have a caption?
-- Are the next conceptual step and the page-to-page navigation obvious?
-- Can the Markdown stand alone, while also supporting richer presentation on the website?
-- Are claims drawn from outside research properly attributable?
-
-**The aim is one coherent argument, readable at more than one level of mathematical depth, with the author's political reasoning made clear and open to examination.**
+**Overall principle:** produce one coherent, persuasive argument, readable at more than one level of mathematical depth, with its premises transparent and its mathematics open to scrutiny.
