@@ -1,6 +1,6 @@
 # Strengthened Voting — Editorial Style Guide
 
-*Version 0.2 · Working conventions for drafting, reviewing and publishing the SV Explanation.*
+*Version 0.3 · Working conventions for drafting, reviewing and publishing the SV Explanation.*
 
 ## 1. Purpose and editorial philosophy
 
@@ -38,13 +38,15 @@ The planned navigation is:
 
 1. **Voting Systems**
 2. **Derivation** (navigation folder)
-   - **2.1 From Votes to Seats**
-   - **2.2 The Mandate Equation**
-   - **2.3 The Mandate Coefficient**
-   - **2.4 Implementation**
+   - **From Votes to Seats**
+   - **The Mandate Equation**
+   - **The Mandate Coefficient**
+   - **Implementation**
 3. **Analysis**
 4. **Evaluation**
 5. **Glossary**
+
+The files may carry ordering prefixes such as `2.1)` and `2.2)` for editorial organisation, **without requiring those numbers in the reader-facing headings**. However, the major-section order (1, 2, 3, etc.) provides the numbering prefix for equations, figures and tables.
 
 Derivation contains **four webpages**, not an additional introductory page at folder level. **Implementation is one webpage.** Its final subsection, “The Complete SV Process”, also concludes Derivation.
 
@@ -115,6 +117,8 @@ Each disclosure should have a **descriptive title**, such as “Show the differe
 The Word draft used a Heading 5 “+Expand to see breakdown” and an empty Heading 5 to delimit these passages. This was an **intentional convention**. Markdown should use explicit opening and closing markup, not empty headings.
 
 A possible portable convention is `<details>` with a `<summary>` title. **Test mathematics inside such disclosures in VS Code, GitHub and the website before standardising it.** If necessary, the Svelte publishing pipeline should provide an equivalent component. Never discard hidden workings when converting the manuscript.
+
+Number an intermediate equation within a long derivation **when a later step needs to refer to or substitute it**. Such a reference does not automatically make the equation a named or boxed principal result. Avoid numbering every trivial algebraic line.
 
 ## 6. Mathematical notation and economy
 
@@ -232,25 +236,127 @@ $$
 
 Do **not** include a composite figure merely to repeat several adjacent transformation diagrams. A new figure must communicate something additional.
 
-## 8. Equations, figures and references
+## 8. Equations, figures, tables and cross-references
 
-### Equation numbering
+### Three classes of mathematical expression
 
-**Number only a small number of important equations.** A number is useful where an equation defines a central quantity, establishes a major result or will be cited repeatedly.
+The display treatment depends on **what the expression is doing in the argument**:
 
-Candidates include the Mandate Equation, Mandate Share, Upper and Lower Bounds, the Innes Constant calibration condition and the Sainte-Laguë rule. Intermediate calculations should ordinarily remain unnumbered.
+| Class | Name shown above? | Boxed? | Numbered? | Use |
+| --- | --- | --- | --- | --- |
+| **Principal equation** | **Yes** | **Yes** | **Yes** | Central definition or major result likely to recur |
+| **Referenced supporting equation** | No separate title required | No | **Yes** | Intermediate result needed for an explicit substitution or later calculation |
+| **Ordinary working** | No | No | No | Algebraic steps that can be followed without formal cross-reference |
 
-Prefer **named references**, supplemented by numbers where helpful: “the Upper Bound of Power (Equation …)”. Give important equations stable semantic identifiers; the website should eventually generate displayed numbers and cross-references. Avoid hard-coding page-dependent equation numbers into manuscript prose.
+**Boxing, naming and numbering go together for principal equations.** But **numbering does not require boxing or naming**: intermediate equations may receive numbers when a lengthy derivation becomes clearer through precise references. Do not elevate those steps into principal results merely to cite them.
 
-### Figures and interactive content
+A principal equation should have its **descriptive name visibly introduced at the point where it appears**, ideally on a short bold line above the equation, without creating a Markdown heading or a table-of-contents entry. For example:
 
-**Every substantive graph, diagram and illustration should have a caption and stable identifier.** Small displayed mathematical arrow expressions need not be numbered as separate figures.
+**Normalised Vote Share**
 
-Every figure must serve an explanatory purpose. Introduce what to look for, and explain what the reader should notice. Prefer continuity of axes, colours, scales and layout when progressively revealing Election Lines and the Bounds of Power.
+$$
+\boxed{x_i=\frac{v_i}{\sum_{j\in\mathcal E}v_j}}\qquad(i\in\mathcal E)\tag{2.1}
+$$
 
-For important figures, retain a readable static **SVG or PNG** in Markdown, a concise caption, meaningful alternative text, clear axes and units, and a stable identifier. Provide an interactive Svelte equivalent where interaction genuinely improves understanding.
+The accompanying prose must explain its symbols and purpose. Later references can call it **the Normalised Vote Share equation (2.1)**. The name need not be printed a second time as a caption below the equation.
 
-The static figure must communicate the essential result without interaction. Do not replace it with only a placeholder promising a future interactive figure. Number figures separately from equations and tables; generate numbering through the website when practical.
+A numbered supporting equation may have only its formula and reference number, without a bold name or a box. For example, a calculation may refer back to **equation (2.4)** before substituting it into **equation (2.6)**. Unnumbered working remains the norm.
+
+### When and how to reference equations
+
+**Not every numbered equation must be mentioned by number in the surrounding prose.** Numbering makes important results available for reference when a later passage needs them; do not manufacture references just to justify a number.
+
+When referring to a principal equation, prefer its **name and number**: “the Mandate Share equation (2.7)”. When referring to an unnamed supporting equation, a numerical reference alone is fine: “substituting equation (2.5) into equation (2.6)”.
+
+Numbering an equation must serve a real navigation or derivational purpose. Review occasional numbered steps that are never referenced and consider leaving them unnumbered.
+
+### Numbering across major sections, not webpages
+
+Number equations, figures and tables in **three independent sequences**. Each sequence is continuous within a major part of the Explanation, and **does not restart on a new webpage or subsection**.
+
+Examples:
+
+- **Equation (2.1)** in *From Votes to Seats* can be followed by **Equation (2.2)** in *The Mandate Equation*.
+- **Figure 2.1** can be the first figure in *The Mandate Equation*, even if *From Votes to Seats* contains no figures.
+- **Table 2.1** can appear on yet another Derivation webpage without affecting equation or figure numbering.
+- If Voting Systems has no figures, there is no requirement to invent a Figure 1.1: the first figure in the entire Explanation may legitimately be **Figure 2.1**.
+
+The **first digit denotes the major section** (1 Voting Systems, 2 Derivation, 3 Analysis, 4 Evaluation), while the second counts that kind of object **throughout the section**. The section numbering is an editorial and reference convention, whether or not numbers appear in the published headings.
+
+Use **Equation (2.1)** or **equation (2.1)** in prose, **Figure 2.1**, and **Table 2.1**. Equation numbers conventionally appear in parentheses beside the formula; figure and table labels do not put their numbers in parentheses.
+
+For now, explicit `\tag{2.1}` labels can be used in Markdown when supported by the chosen maths renderer. Confirm rendering in VS Code, GitHub and the website. In the long term, generate numbering and references automatically to avoid renumbering by hand.
+
+### Stable source identifiers
+
+Give each **numbered equation** a persistent semantic identifier in a source comment. Give a **principal** equation its descriptive name in a comment as well as in the visible text. For example:
+
+```md
+<!-- equation-id: normalised-vote-share -->
+<!-- equation-name: Normalised Vote Share -->
+
+**Normalised Vote Share**
+
+$$
+\boxed{x_i=\frac{v_i}{\sum_{j\in\mathcal E}v_j}}\qquad(i\in\mathcal E)\tag{2.1}
+$$
+```
+
+An intermediate numbered expression needs an `equation-id` but not necessarily an `equation-name`. The comments are **metadata conventions**, not functioning hyperlinks on their own; the website can later turn them into anchors and dynamic cross-references.
+
+Stable identifiers should outlive visible numbering changes. The manuscript's important equations should be easy to find by **name**, not just by number.
+
+### Figures, diagrams and interactive content
+
+**Every substantive graph, diagram or illustration should have a descriptive, visibly numbered caption**, together with a stable figure identifier. The numbering follows the **major-section sequence** described above. Tiny decorative graphics and ordinary mathematical arrow expressions need not become separate numbered figures.
+
+A figure must explain something beyond the adjacent text. Introduce what the reader should look for, then interpret the result. Preserve visual continuity across related graphs, including axes, colours and scales, while revealing new information such as Election Lines, the Upper Bound, the Lower Bound and the Majority-Vote Boundary.
+
+For important figures retain:
+
+- A readable static **SVG** (preferred for mathematical diagrams) or **PNG** in the Markdown.
+- A descriptive caption, numbered **Figure 2.1 — …** where appropriate.
+- Meaningful alternative text and clear labels, axes, units and parameters.
+- A stable semantic identifier, for example `mandate-convexity`.
+- An interactive Svelte version when interaction genuinely improves comprehension.
+
+The static image must communicate the essential result without interaction. Do not leave a figure as only a placeholder comment once a suitable static image is available.
+
+An illustration's semantic identifier is stable even if its visible number changes. The website may eventually generate captions and numbering automatically.
+
+### Figure storage and relative Markdown paths
+
+Keep the shared figure library at:
+
+```text
+docs/
+  style.md
+  explanation/
+    figures/
+      2.2-convexity.svg
+      2.2-strength-and-mandate.svg
+    2) Derivation/
+      2.1) From Votes to Seats.md
+      2.2) The Mandate Equation.md
+```
+
+A Markdown document within `docs/explanation/2) Derivation/` therefore references the common figures folder through **`../figures/`**, not `./figures/`:
+
+```md
+<!-- figure-id: mandate-convexity -->
+
+![Illustrative convex Mandate functions](../figures/2.2-convexity.svg)
+
+*Figure 2.1 — Illustrative convex Mandate functions.*
+```
+
+In filenames, an optional prefix such as `2.2-` is a **storage and editorial identifier**, not the displayed figure number. Figure numbering is continuous across Derivation, irrespective of which page stores the figure reference. Do not duplicate a shared figure merely because another page refers to it.
+
+The website's asset handling may require path conversion; its published asset URLs must not be confused with manuscript-relative filesystem links.
+
+### Tables
+
+Give substantive tables descriptive captions numbered **Table 2.1 — …**, in their own sequence. Small layout tables or temporary scratch calculations need not become published numbered tables. Introduce and interpret meaningful tables just as for figures. Do not present the same data in both a nearby graph and a table unless the combination supplies useful additional detail.
 
 ## 9. Worked examples and verification
 
@@ -288,17 +394,28 @@ Distinguish SV's original arguments from established electoral literature. Evalu
 
 ## 13. Redrafting workflow and final checks
 
-For each page, compare the latest Word draft, Markdown manuscript, style guide and relevant diagrams. Neither manuscript is automatically authoritative when they disagree.
+For each page, compare the **latest committed manuscript**, the latest Word draft, the style guide and relevant diagrams. Neither Word nor earlier Markdown drafts automatically override the current version.
 
-Review in this order:
+When revising an **existing** draft, use a two-pass editorial workflow:
+
+1. **Editorial review:** identify individual, text-anchored proposed changes, grouped into manageable batches. For each, show the existing passage, the proposed wording or structural action, and the reason. Give the user the ability to **accept, reject or modify** the proposal. Separate essential corrections from optional stylistic choices. Identify strong passages to retain.
+2. **Consolidation:** after the substantive decisions have been reviewed, apply only the approved changes, perform a light consistency check, and provide the complete revised Markdown and, when helpful, a **unified diff** showing what changed.
+
+For a genuinely **new** section without an existing draft, prepare a full draft rather than inventing an unnecessary change list.
+
+Within either workflow, review in this order:
 
 1. **Purpose and placement:** What must this passage establish, and what belongs later?
 2. **Completeness:** Which necessary definitions, transitions or steps are missing?
 3. **Mathematics:** Verify formulae and computed values; inspect rendered equations.
 4. **Visuals:** Preserve useful diagrams and remove redundant presentations.
 5. **Prose:** Apply the voice, capitalisation, terminology and clarity conventions.
-6. **Publishing:** Check disclosures, figures, captions, navigation, links and rendering.
+6. **Publishing:** Check disclosures, named equations, captions, navigation, links and rendering.
 
-Before approval, check that the main argument is accessible without hidden proofs; its mathematics is verifiable; its premises are clear and not repeatedly requalified; its symbols distinguish Raw Votes, eligible Vote Share, Mandate, Mandate Share and seats; its examples are internally consistent; its visuals add real explanatory value; and its conclusion leads naturally to the next page.
+Do not polish passages that should be moved or cut. Preserve the original author's deliberate choices unless there is a reason to propose changing them.
+
+**Repository control:** generate files and suggested patches for local review. **Do not commit or push changes to GitHub unless the user explicitly requests it.**
+
+Before approval, check that the main argument is accessible without hidden proofs; its mathematics is verifiable; its premises are clear and not repeatedly requalified; its symbols distinguish Raw Votes, eligible Vote Share, Mandate, Mandate Share and seats; its examples are internally consistent; its visualisations add explanatory value; its references follow the major-section numbering rule; and its conclusion leads naturally to the next page.
 
 **Overall principle:** produce one coherent, persuasive argument, readable at more than one level of mathematical depth, with its premises transparent and its mathematics open to scrutiny.
